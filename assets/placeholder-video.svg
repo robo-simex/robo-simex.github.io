@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+  <defs>
+    <pattern id="hatch" width="28" height="28" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="28" height="28" fill="#EDE5D8"/>
+      <line x1="0" y1="0" x2="0" y2="28" stroke="#E2D8C8" stroke-width="10"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#hatch)"/>
+  <rect x="24" y="24" width="1552" height="852" fill="none" stroke="#B8461B" stroke-width="4" stroke-dasharray="18 14" rx="10"/>
+  <g transform="translate(800 400)">
+    <circle r="86" fill="#F5F0E8" stroke="#8B2635" stroke-width="6"/>
+    <polygon points="-30,-48 58,0 -30,48" fill="#8B2635"/>
+  </g>
+  <text x="800" y="580" text-anchor="middle" font-family="Georgia, serif" font-size="54" fill="#1B1614">video placeholder</text>
+  <text x="800" y="640" text-anchor="middle" font-family="Courier New, monospace" font-size="30" fill="#6B5F5A">drop an .mp4 into assets/videos/ and update the &lt;source&gt;</text>
+</svg>

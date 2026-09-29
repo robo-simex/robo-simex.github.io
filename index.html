@@ -1,9 +1,256 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>SimEX</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SimEX — Simulation-Integrated Robotics AutoResearch</title>
+  <meta name="description" content="SimEX lets coding agents acquire physical robot capabilities by experimenting in simulation first, then adapting to the real robot in a handful of trials.">
+  <meta property="og:title" content="SimEX: Simulation-Integrated Robotics AutoResearch">
+  <meta property="og:description" content="Coding agents build a robot toolbox through open-ended simulated experimentation, then repair it on the real robot with about ten minutes of interaction.">
+  <meta property="og:image" content="assets/figures/fig1_concept.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Hello World!</h1>
+
+<nav class="site-nav" aria-label="Page sections">
+  <div class="container nav-inner">
+    <span class="nav-brand">SimEX</span>
+    <div class="nav-links">
+      <a class="nav-link" href="#real-world">Real-World Results</a>
+      <a class="nav-link" href="#emergent">Emergent Behaviors</a>
+      <a class="nav-link" href="#multitask">Multi-Task</a>
+      <a class="nav-link" href="#simulation">Simulation</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container hero-inner">
+    <h1 class="paper-title">
+      <span class="title-line">SimEX: Simulation-Integrated Robotics AutoResearch</span>
+      <span class="title-sub">Coding agents that learn to control real robots by experimenting in simulation first</span>
+    </h1>
+  </div>
+</header>
+
+<section id="overview" class="section section--lead">
+  <div class="container">
+    <p class="body-text lead">
+      Coding agents are good at reasoning about goals in the digital world, but bringing them onto robots has been hard.
+      Writing a policy in one shot fails because the model does not understand the robot or the physics well enough, and
+      iterating directly on hardware is slow, costly and unsafe. <strong>SimEX</strong> uses simulation as the
+      laboratory. In <em>Stage 1</em> a coding agent runs open-ended probe-and-optimize cycles in a simulated sandbox,
+      inventing its own tasks and building a reusable robot toolbox. In <em>Stage 2</em> it adapts that toolbox to the
+      real robot with only five physical trials, replaying each trial in simulation to diagnose the failure and screening
+      several candidate repairs before spending the next trial. No demonstrations, no hand-written skills, and about ten
+      minutes of robot time per task.
+    </p>
+    <figure class="plain">
+      <div class="figure-placeholder" role="img" aria-label="Overview figure placeholder"></div>
+    </figure>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section id="real-world" class="section">
+  <div class="container container--wide">
+    <p class="eyebrow">Real-world qualitative results</p>
+    <h2>Task completion on the physical robot</h2>
+    <p class="body-text section-intro">
+      Here we present a number of real-world examples that show what the adapted toolbox does on the physical dual-arm
+      YAM robot. Two complete rollouts per task.
+    </p>
+
+    <h3>Barcode scanning</h3>
+    <div class="video-grid video-grid--2">
+      <div>
+        <div class="video-wrap"><span class="data-label real">real robot</span>
+          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/real_barcode_1.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Rollout 1.</span> Two objects: scan and stow both.</p>
+      </div>
+      <div>
+        <div class="video-wrap"><span class="data-label real">real robot</span>
+          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/real_barcode_2.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Rollout 2.</span> A different start configuration.</p>
+      </div>
+    </div>
+
+    <h3>Plate to tote</h3>
+    <div class="video-grid video-grid--2">
+      <div>
+        <div class="video-wrap"><span class="data-label real">real robot</span>
+          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/real_plate_1.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Rollout 1.</span> All four plates into the tote.</p>
+      </div>
+      <div>
+        <div class="video-wrap"><span class="data-label real">real robot</span>
+          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/real_plate_2.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Rollout 2.</span> A different start configuration.</p>
+      </div>
+    </div>
+
+    <h3>Towel folding</h3>
+    <div class="video-grid video-grid--2">
+      <div>
+        <div class="video-wrap"><span class="data-label real">real robot</span>
+          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/real_towel_1.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Rollout 1.</span> Fold in half.</p>
+      </div>
+      <div>
+        <div class="video-wrap"><span class="data-label real">real robot</span>
+          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/real_towel_2.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Rollout 2.</span> A different start pose.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section id="emergent" class="section">
+  <div class="container container--wide">
+    <p class="eyebrow">Real-world qualitative results</p>
+    <h2>Emergent behaviors</h2>
+    <p class="body-text section-intro">
+      None of the behaviors below were specified. They emerged from the agent's own probe-and-optimize cycles in
+      simulation and its repairs after real trials.
+    </p>
+    <div class="video-grid video-grid--2">
+      <div>
+        <div class="video-wrap"><span class="data-label real">real robot</span>
+          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/emergent_1.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Behavior 1.</span> What happens, and why it is interesting.</p>
+      </div>
+      <div>
+        <div class="video-wrap"><span class="data-label real">real robot</span>
+          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/emergent_2.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Behavior 2.</span> What happens, and why it is interesting.</p>
+      </div>
+      <div>
+        <div class="video-wrap"><span class="data-label real">real robot</span>
+          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/emergent_3.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Behavior 3.</span> What happens, and why it is interesting.</p>
+      </div>
+      <div>
+        <div class="video-wrap"><span class="data-label real">real robot</span>
+          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/emergent_4.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Behavior 4.</span> What happens, and why it is interesting.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section id="multitask" class="section">
+  <div class="container container--wide">
+    <p class="eyebrow">Real-world qualitative results</p>
+    <h2>Instruction following and multi-task capabilities</h2>
+    <p class="body-text section-intro">
+      The same toolbox, a new instruction. Here we change the task at deployment time and let the coding agent write a
+      fresh program against the toolbox it built.
+    </p>
+    <div class="video-grid video-grid--2">
+      <div>
+        <div class="video-wrap"><span class="data-label real">real robot</span>
+          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/multitask_1.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Tweak 1.</span> The instruction and what changed.</p>
+      </div>
+      <div>
+        <div class="video-wrap"><span class="data-label real">real robot</span>
+          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/multitask_2.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Tweak 2.</span> The instruction and what changed.</p>
+      </div>
+      <div>
+        <div class="video-wrap"><span class="data-label real">real robot</span>
+          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/multitask_3.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Tweak 3.</span> The instruction and what changed.</p>
+      </div>
+      <div>
+        <div class="video-wrap"><span class="data-label real">real robot</span>
+          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/multitask_4.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Tweak 4.</span> The instruction and what changed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section id="simulation" class="section">
+  <div class="container container--wide">
+    <p class="eyebrow">Simulation</p>
+    <h2>The same policies in the evaluation simulators</h2>
+    <p class="body-text section-intro">
+      The controlled sim-to-sim experiments in the paper use an independently implemented simulator as the stand-in for the robot:
+      Isaac Sim for barcode scanning and plate to tote, MJWarp Flex for towel folding. Below, two successful rollouts of
+      the adapted toolbox on the held-out tasks of each family.
+    </p>
+    <div id="sim-video-grids"></div>
+  </div>
+</section>
+
+<footer><div class="container"></div></footer>
+
+<script>
+const SIM_TASKS = {
+  barcode: { family: "Barcode scanning", tasks: [
+    ["t01", "Wall-side bottle"], ["t03", "Across-tote bottle"], ["t05", "Far upright bottle"],
+    ["t07", "Hidden-barcode block"], ["t10", "Wall-side prism"], ["t11", "Two bottles"], ["t12", "Bottle and block"]]},
+  plate: { family: "Plate to tote", tasks: [
+    ["t03", "Same-side pair"], ["t05", "Diagonal pair"], ["t07", "Far outboard plate"], ["t08", "Far plate to near tote"],
+    ["t09", "Any three"], ["t11", "Shifted single"], ["t12", "Shifted diagonal pair"]]},
+  towel: { family: "Towel folding",
+    note: "The towel sim-to-sim experiments use MJWarp Flex as the stand-in for the real robot. Its cloth solver is coarse, " +
+          "so the towel in these clips does not behave like real fabric: it stretches, bunches and settles in ways a physical " +
+          "towel would not. The experiment tests whether the agent can adapt to the dynamics it is given, and even under " +
+          "Flex's approximate cloth physics a few rounds of adaptation are enough for it to find strategies that meet the " +
+          "success criteria of each task.",
+    tasks: [
+    ["t01", "Rotated shift"], ["t02", "Left-shifted shift"], ["t03", "Right-shifted shrink"], ["t04", "Rotated shrink"],
+    ["t08", "Rotated half fold"], ["t06", "Left-shifted half fold"]]},
+};
+const root = document.getElementById("sim-video-grids");
+for (const [key, fam] of Object.entries(SIM_TASKS)) {
+  const h = document.createElement("h3"); h.textContent = fam.family; root.appendChild(h);
+  if (fam.note) { const p = document.createElement("p"); p.className = "body-text section-intro"; p.textContent = fam.note; root.appendChild(p); }
+  for (const [id, name] of fam.tasks) {
+    const row = document.createElement("div"); row.className = "sim-task-row";
+    const label = document.createElement("p"); label.className = "sim-task-label"; label.textContent = name; row.appendChild(label);
+    const grid = document.createElement("div"); grid.className = "video-grid video-grid--2";
+    for (const n of [1, 2]) {
+      const clip = `${key}_${id}_${n}`;
+      grid.insertAdjacentHTML("beforeend", `
+        <div>
+          <div class="video-wrap"><span class="data-label sim">simulation</span>
+            <video poster="assets/videos/sim/posters/${clip}.jpg" muted loop playsinline controls preload="none" data-clip="${clip}">
+              <source src="assets/videos/sim/${clip}.mp4" type="video/mp4"></video></div>
+          <p class="vc-caption">Rollout ${n}</p>
+        </div>`);
+    }
+    row.appendChild(grid); root.appendChild(row);
+  }
+}
+for (const v of root.querySelectorAll("video")) {
+  const probe = new Image();
+  probe.onerror = () => { v.poster = "assets/placeholder-video.svg"; v.dataset.missing = "1"; };
+  probe.src = v.poster;
+}
+if ("IntersectionObserver" in window) {
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      const v = e.target;
+      if (v.dataset.missing) continue;
+      if (e.isIntersecting) { v.play().catch(() => {}); } else { v.pause(); }
+    }
+  }, { threshold: 0.4 });
+  root.querySelectorAll("video").forEach((v) => io.observe(v));
+}
+</script>
+
 </body>
 </html>
