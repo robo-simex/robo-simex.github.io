@@ -57,8 +57,21 @@ code, pre { font-family: var(--font-mono); }
 
 .video-grid { display: grid; gap: var(--space-lg); grid-template-columns: repeat(3, 1fr); }
 .video-grid--2 { grid-template-columns: repeat(2, 1fr); }
-@media (max-width: 760px) { .video-grid, .video-grid--2, .video-wrap { position: relative; border-radius: var(--radius-md); overflow: hidden; background: var(--bg-surface); aspect-ratio: 16 / 9; }
-.video-wrap video { width: 100%; height: 100%; object-fit: cover; }
+.video-pair { grid-column: 1 / -1; margin: 0; min-width: 0; }
+@media (min-width: 761px) {
+  .video-grid--2 > :last-child:nth-child(odd):not(.video-pair) {
+    grid-column: 1 / -1;
+    width: calc((100% - var(--space-lg)) / 2);
+    justify-self: center;
+  }
+}
+@media (max-width: 760px) {
+  .video-grid, .video-grid--2 { grid-template-columns: 1fr; }
+  .nav-inner { height: auto; min-height: 52px; gap: var(--space-md); padding-top: .5rem; padding-bottom: .5rem; }
+  .nav-links { gap: .35rem var(--space-md); justify-content: flex-end; }
+}
+.video-wrap { position: relative; border-radius: var(--radius-md); overflow: hidden; background: var(--bg-surface); aspect-ratio: 16 / 9; }
+.video-wrap video { width: 100%; height: 100%; object-fit: contain; }
 .video-wrap .data-label {
   position: absolute; left: .5rem; top: .5rem; padding: .15rem .5rem; border-radius: var(--radius-sm);
   background: rgba(27, 22, 20, .75); color: var(--bg); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: .06em;
@@ -79,7 +92,7 @@ code, pre { font-family: var(--font-mono); }
 .eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--accent-warm); margin: 0 0 var(--space-sm); }
 
 figure { margin: var(--space-xl) 0; }
-figure img { width: 100%; border-radius: var(--radius-md); }
+figure img { width: 100%; height: auto; border-radius: var(--radius-md); }
 figure.plain img { background: transparent; }
 figcaption { margin-top: .7rem; font-size: var(--text-sm); color: var(--text-muted); line-height: 1.55; }
 .figure-placeholder { width: 100%; aspect-ratio: 16 / 7; border: 2px dashed var(--divider); border-radius: var(--radius-md); background: transparent; }

@@ -7,7 +7,7 @@
   <meta name="description" content="SimEX lets coding agents acquire physical robot capabilities by experimenting in simulation first, then adapting to the real robot in a handful of trials.">
   <meta property="og:title" content="SimEX: Simulation-Integrated Robotics AutoResearch">
   <meta property="og:description" content="Coding agents build a robot toolbox through open-ended simulated experimentation, then repair it on the real robot with about ten minutes of interaction.">
-  <meta property="og:image" content="assets/figures/fig1_concept.png">
+  <meta property="og:image" content="assets/figures/website_image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -49,7 +49,7 @@
       minutes of robot time per task.
     </p>
     <figure class="plain">
-      <div class="figure-placeholder" role="img" aria-label="Overview figure placeholder"></div>
+      <img src="assets/figures/website_image.png" width="1859" height="846" alt="SimEX: discover robot skills in simulation, build a reusable toolbox of code and usage knowledge, and adapt in the real world through real trials and simulation tests.">
     </figure>
   </div>
 </section>
@@ -60,50 +60,44 @@
   <div class="container container--wide">
     <p class="eyebrow">Real-world qualitative results</p>
     <h2>Task completion on the physical robot</h2>
-    <p class="body-text section-intro">
-      Here we present a number of real-world examples that show what the adapted toolbox does on the physical dual-arm
-      YAM robot. Two complete rollouts per task.
-    </p>
-
+    <p class="body-text section-intro">Real-world rollouts of the adapted toolbox on the physical dual-arm YAM robot. All clips are shown at 8× speed.</p>
     <h3>Barcode scanning</h3>
     <div class="video-grid video-grid--2">
       <div>
-        <div class="video-wrap"><span class="data-label real">real robot</span>
-          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/real_barcode_1.mp4" type="video/mp4"></video></div>
-        <p class="vc-caption"><span class="video-task">Rollout 1.</span> Two objects: scan and stow both.</p>
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/task video/good_scan_8x.jpg" muted playsinline controls preload="none" aria-label="Barcode scanning · Rollout 1"><source src="assets/videos/real/task video/good_scan_8x.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption">Barcode scanning · Rollout 1</p>
       </div>
       <div>
-        <div class="video-wrap"><span class="data-label real">real robot</span>
-          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/real_barcode_2.mp4" type="video/mp4"></video></div>
-        <p class="vc-caption"><span class="video-task">Rollout 2.</span> A different start configuration.</p>
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/task video/great_scan_8x.jpg" muted playsinline controls preload="none" aria-label="Barcode scanning · Rollout 2"><source src="assets/videos/real/task video/great_scan_8x.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption">Barcode scanning · Rollout 2</p>
       </div>
     </div>
-
     <h3>Plate to tote</h3>
     <div class="video-grid video-grid--2">
       <div>
-        <div class="video-wrap"><span class="data-label real">real robot</span>
-          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/real_plate_1.mp4" type="video/mp4"></video></div>
-        <p class="vc-caption"><span class="video-task">Rollout 1.</span> All four plates into the tote.</p>
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/task video/good_plate_8x.jpg" muted playsinline controls preload="none" aria-label="Plate to tote · Rollout 1"><source src="assets/videos/real/task video/good_plate_8x.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption">Plate to tote · Rollout 1</p>
       </div>
       <div>
-        <div class="video-wrap"><span class="data-label real">real robot</span>
-          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/real_plate_2.mp4" type="video/mp4"></video></div>
-        <p class="vc-caption"><span class="video-task">Rollout 2.</span> A different start configuration.</p>
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/task video/good_plate_2_8x.jpg" muted playsinline controls preload="none" aria-label="Plate to tote · Rollout 2"><source src="assets/videos/real/task video/good_plate_2_8x.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption">Plate to tote · Rollout 2</p>
       </div>
     </div>
-
     <h3>Towel folding</h3>
     <div class="video-grid video-grid--2">
       <div>
-        <div class="video-wrap"><span class="data-label real">real robot</span>
-          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/real_towel_1.mp4" type="video/mp4"></video></div>
-        <p class="vc-caption"><span class="video-task">Rollout 1.</span> Fold in half.</p>
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/task video/good_2fold_8x.jpg" muted playsinline controls preload="none" aria-label="Two-fold towel task · Rollout 1"><source src="assets/videos/real/task video/good_2fold_8x.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption">Two-fold towel task · Rollout 1</p>
       </div>
       <div>
-        <div class="video-wrap"><span class="data-label real">real robot</span>
-          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/real_towel_2.mp4" type="video/mp4"></video></div>
-        <p class="vc-caption"><span class="video-task">Rollout 2.</span> A different start pose.</p>
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/task video/good_2fold_2_8x.jpg" muted playsinline controls preload="none" aria-label="Two-fold towel task · Rollout 2"><source src="assets/videos/real/task video/good_2fold_2_8x.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption">Two-fold towel task · Rollout 2</p>
       </div>
     </div>
   </div>
@@ -115,31 +109,37 @@
   <div class="container container--wide">
     <p class="eyebrow">Real-world qualitative results</p>
     <h2>Emergent behaviors</h2>
-    <p class="body-text section-intro">
-      None of the behaviors below were specified. They emerged from the agent's own probe-and-optimize cycles in
-      simulation and its repairs after real trials.
-    </p>
+    <p class="body-text section-intro">None of the behaviors below were specified. They emerged from the agent's own probe-and-optimize cycles in simulation and its repairs after real trials.</p>
     <div class="video-grid video-grid--2">
       <div>
-        <div class="video-wrap"><span class="data-label real">real robot</span>
-          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/emergent_1.mp4" type="video/mp4"></video></div>
-        <p class="vc-caption"><span class="video-task">Behavior 1.</span> What happens, and why it is interesting.</p>
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/task video/good_2_scan_packaged_objects_scan_and_transfer_IMG_2461_8x.jpg" muted playsinline controls preload="none" aria-label="Zero-shot scanning of unseen objects"><source src="assets/videos/real/task video/good_2_scan_packaged_objects_scan_and_transfer_IMG_2461_8x.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Zero-shot generalization.</span> The scanning skill generalizes to unseen objects in a zero-shot setting.</p>
       </div>
       <div>
-        <div class="video-wrap"><span class="data-label real">real robot</span>
-          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/emergent_2.mp4" type="video/mp4"></video></div>
-        <p class="vc-caption"><span class="video-task">Behavior 2.</span> What happens, and why it is interesting.</p>
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/emergent_behavior/bottle_at_edge_8x.jpg" muted playsinline controls preload="none" aria-label="Bottle at the tote edge"><source src="assets/videos/real/emergent_behavior/bottle_at_edge_8x.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Bottle at the tote edge.</span> The robot figured out how to pick up objects at the edge of the tote by aligning its gripper with the tote’s orientation and gently nudging the tote.</p>
       </div>
       <div>
-        <div class="video-wrap"><span class="data-label real">real robot</span>
-          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/emergent_3.mp4" type="video/mp4"></video></div>
-        <p class="vc-caption"><span class="video-task">Behavior 3.</span> What happens, and why it is interesting.</p>
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/emergent_behavior/good_flip_box_8x.jpg" muted playsinline controls preload="none" aria-label="Flipping a box"><source src="assets/videos/real/emergent_behavior/good_flip_box_8x.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Flipping a box.</span> When the label is on the other side, the agent learned to flip the object in the tote and scan it again.</p>
       </div>
       <div>
-        <div class="video-wrap"><span class="data-label real">real robot</span>
-          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/emergent_4.mp4" type="video/mp4"></video></div>
-        <p class="vc-caption"><span class="video-task">Behavior 4.</span> What happens, and why it is interesting.</p>
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/emergent_behavior/amazing_recovery_mixed_objects_scan_and_transfer_IMG_2466_8x.jpg" muted playsinline controls preload="none" aria-label="Recovery during scan and transfer"><source src="assets/videos/real/emergent_behavior/amazing_recovery_mixed_objects_scan_and_transfer_IMG_2466_8x.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption"><span class="video-task">Recovery during scan and transfer.</span> The agent is robust to failures and can recover from them.</p>
       </div>
+      <figure class="video-pair" aria-labelledby="plate-grasp-caption">
+        <div class="video-grid video-grid--2">
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/emergent_behavior/edge/plate_right_8x.jpg" muted playsinline controls preload="none" aria-label="Plate at the right edge"><source src="assets/videos/real/emergent_behavior/edge/plate_right_8x.mp4" type="video/mp4"></video></div>
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/emergent_behavior/edge/plate_left_8x.jpg" muted playsinline controls preload="none" aria-label="Plate at the left edge"><source src="assets/videos/real/emergent_behavior/edge/plate_left_8x.mp4" type="video/mp4"></video></div>
+        </div>
+        <figcaption id="plate-grasp-caption" class="vc-caption">The left and right videos show the agent grasping the plate from different sides based on its distance from the tote, avoiding collisions with the tote or wall.</figcaption>
+      </figure>
     </div>
   </div>
 </section>
@@ -150,30 +150,32 @@
   <div class="container container--wide">
     <p class="eyebrow">Real-world qualitative results</p>
     <h2>Instruction following and multi-task capabilities</h2>
-    <p class="body-text section-intro">
-      The same toolbox, a new instruction. Here we change the task at deployment time and let the coding agent write a
-      fresh program against the toolbox it built.
-    </p>
+    <p class="body-text section-intro">The same toolbox, a new instruction. Here we change the task at deployment time and let the coding agent write a fresh program against the toolbox it built.</p>
     <div class="video-grid video-grid--2">
       <div>
-        <div class="video-wrap"><span class="data-label real">real robot</span>
-          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/multitask_1.mp4" type="video/mp4"></video></div>
-        <p class="vc-caption"><span class="video-task">Tweak 1.</span> The instruction and what changed.</p>
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/instruction_following/Good_2object_mixed_objects_scan_and_transfer_IMG_2452_8x.jpg" muted playsinline controls preload="none" aria-label="Scan two objects and place them in the destination tote."><source src="assets/videos/real/instruction_following/Good_2object_mixed_objects_scan_and_transfer_IMG_2452_8x.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption">“Scan two objects and place them in the destination tote.”</p>
       </div>
       <div>
-        <div class="video-wrap"><span class="data-label real">real robot</span>
-          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/multitask_2.mp4" type="video/mp4"></video></div>
-        <p class="vc-caption"><span class="video-task">Tweak 2.</span> The instruction and what changed.</p>
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/instruction_following/good_one_object_packaged_objects_scan_and_transfer_IMG_2460_8x.jpg" muted playsinline controls preload="none" aria-label="Scan one object and place it in the destination tote."><source src="assets/videos/real/instruction_following/good_one_object_packaged_objects_scan_and_transfer_IMG_2460_8x.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption">“Scan one object and place it in the destination tote.”</p>
       </div>
       <div>
-        <div class="video-wrap"><span class="data-label real">real robot</span>
-          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/multitask_3.mp4" type="video/mp4"></video></div>
-        <p class="vc-caption"><span class="video-task">Tweak 3.</span> The instruction and what changed.</p>
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/instruction_following/good_three_plates_8x.jpg" muted playsinline controls preload="none" aria-label="Leave one plate on the table."><source src="assets/videos/real/instruction_following/good_three_plates_8x.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption">“Leave one plate on the table.”</p>
       </div>
       <div>
-        <div class="video-wrap"><span class="data-label real">real robot</span>
-          <video poster="assets/placeholder-video.svg" muted loop playsinline controls><source src="assets/videos/multitask_4.mp4" type="video/mp4"></video></div>
-        <p class="vc-caption"><span class="video-task">Tweak 4.</span> The instruction and what changed.</p>
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/instruction_following/good_plate_instruction_following_8x.jpg" muted playsinline controls preload="none" aria-label="Place the red plate in the tote."><source src="assets/videos/real/instruction_following/good_plate_instruction_following_8x.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption">“Place the red plate in the tote.”</p>
+      </div>
+      <div>
+        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
+          <video data-poster="assets/videos/real/instruction_following/good_1fold_tilt_8x.jpg" muted playsinline controls preload="none" aria-label="Fold the towel in half."><source src="assets/videos/real/instruction_following/good_1fold_tilt_8x.mp4" type="video/mp4"></video></div>
+        <p class="vc-caption">“Fold the towel in half.”</p>
       </div>
     </div>
   </div>
@@ -184,7 +186,7 @@
 <section id="simulation" class="section">
   <div class="container container--wide">
     <p class="eyebrow">Simulation</p>
-    <h2>The same policies in the evaluation simulators</h2>
+    <h2>Sim-to-sim behaviors</h2>
     <p class="body-text section-intro">
       The controlled sim-to-sim experiments in the paper use an independently implemented simulator as the stand-in for the robot:
       Isaac Sim for barcode scanning and plate to tote, MJWarp Flex for towel folding. Below, two successful rollouts of
@@ -227,7 +229,7 @@ for (const [key, fam] of Object.entries(SIM_TASKS)) {
       grid.insertAdjacentHTML("beforeend", `
         <div>
           <div class="video-wrap"><span class="data-label sim">simulation</span>
-            <video poster="assets/videos/sim/posters/${clip}.jpg" muted loop playsinline controls preload="none" data-clip="${clip}">
+            <video data-poster="assets/videos/sim/posters/${clip}.jpg" muted playsinline controls preload="none" data-clip="${clip}">
               <source src="assets/videos/sim/${clip}.mp4" type="video/mp4"></video></div>
           <p class="vc-caption">Rollout ${n}</p>
         </div>`);
@@ -235,20 +237,47 @@ for (const [key, fam] of Object.entries(SIM_TASKS)) {
     row.appendChild(grid); root.appendChild(row);
   }
 }
-for (const v of root.querySelectorAll("video")) {
-  const probe = new Image();
-  probe.onerror = () => { v.poster = "assets/placeholder-video.svg"; v.dataset.missing = "1"; };
-  probe.src = v.poster;
+// Fetch thumbnails shortly before they enter the viewport, without loading video data.
+const videos = document.querySelectorAll("video");
+function loadPoster(video) {
+  if (!video.dataset.poster) return;
+  video.poster = video.dataset.poster;
+  delete video.dataset.poster;
 }
+// Reset completed clips to their posters and require a click to replay them.
+const completedVideos = new WeakSet();
+videos.forEach((video) => {
+  video.addEventListener("ended", () => {
+    completedVideos.add(video);
+    loadPoster(video);
+    video.load();
+  });
+});
 if ("IntersectionObserver" in window) {
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      const v = e.target;
-      if (v.dataset.missing) continue;
-      if (e.isIntersecting) { v.play().catch(() => {}); } else { v.pause(); }
+  const posters = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      loadPoster(entry.target);
+      posters.unobserve(entry.target);
     }
-  }, { threshold: 0.4 });
-  root.querySelectorAll("video").forEach((v) => io.observe(v));
+  }, { rootMargin: "400px 0px" });
+  videos.forEach((video) => posters.observe(video));
+
+  // Only task-completion clips autoplay; all other sections use native play controls.
+  const playback = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      const video = entry.target;
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.4) {
+        loadPoster(video);
+        if (!completedVideos.has(video)) video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    }
+  }, { threshold: [0, 0.4] });
+  document.querySelectorAll("#real-world video").forEach((video) => playback.observe(video));
+} else {
+  videos.forEach(loadPoster);
 }
 </script>
 
