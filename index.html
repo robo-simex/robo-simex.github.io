@@ -250,7 +250,26 @@ videos.forEach((video) => {
   video.addEventListener("ended", () => {
     completedVideos.add(video);
     loadPoster(video);
+    video.preload = "none";
     video.load();
+  });
+});
+// A row follows the responsive layout: a pair on desktop, one clip on mobile.
+function sameVideoRow(a, b) {
+  return a.closest(".video-grid") === b.closest(".video-grid") &&
+    Math.abs(a.getBoundingClientRect().top - b.getBoundingClientRect().top) < 2;
+}
+videos.forEach((video) => {
+  video.addEventListener("play", () => {
+    videos.forEach((other) => {
+      if (other !== video && !sameVideoRow(video, other)) other.pause();
+    });
+  });
+});
+window.addEventListener("resize", () => {
+  const playing = [...videos].filter((video) => !video.paused);
+  if (playing.length) playing.forEach((video) => {
+    if (!sameVideoRow(playing[0], video)) video.pause();
   });
 });
 if ("IntersectionObserver" in window) {
@@ -263,19 +282,88 @@ if ("IntersectionObserver" in window) {
   }, { rootMargin: "400px 0px" });
   videos.forEach((video) => posters.observe(video));
 
-  // Only task-completion clips autoplay; all other sections use native play controls.
+  // Buffer only nearby task-completion clips. Other sections remain click-to-play.
+  const taskVideos = document.querySelectorAll("#real-world video");
+  const visibleVideos = new Set();
+  let selectedRow = null;
+  const startedVideos = new WeakSet();
+  function playWhenBuffered(video) {
+    if (!selectedRow || !sameVideoRow(selectedRow, video) ||
+        !visibleVideos.has(video) || completedVideos.has(video) || startedVideos.has(video)) return;
+    if (!Number.isFinite(video.duration)) return;
+    const target = Math.min(3, video.duration - video.currentTime);
+    for (let i = 0; i < video.buffered.length; i++) {
+      if (video.buffered.start(i) <= video.currentTime &&
+          video.buffered.end(i) - video.currentTime >= target) {
+        startedVideos.add(video);
+        video.play().catch(() => {});
+        break;
+      }
+    }
+  }
+  taskVideos.forEach((video) => {
+    // Respect a manual pause until the clip leaves and re-enters the viewport.
+    video.addEventListener("play", () => startedVideos.add(video));
+    for (const event of ["progress", "loadeddata", "canplay", "canplaythrough"]) {
+      video.addEventListener(event, () => playWhenBuffered(video));
+    }
+  });
+  videos.forEach((video) => {
+    video.addEventListener("play", () => {
+      if (selectedRow && !sameVideoRow(selectedRow, video)) selectedRow = null;
+    });
+  });
+  const buffering = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      const video = entry.target;
+      if (!completedVideos.has(video)) {
+        loadPoster(video);
+        video.preload = "auto";
+        if (video.networkState === HTMLMediaElement.NETWORK_EMPTY) video.load();
+      }
+      buffering.unobserve(video);
+    }
+  }, { rootMargin: "150px 0px" });
+  function selectAutoplayRow() {
+    const candidates = [...visibleVideos].filter((video) => !completedVideos.has(video));
+    candidates.sort((a, b) => {
+      const centerDistance = (video) => {
+        const rect = video.getBoundingClientRect();
+        return Math.abs(rect.top + rect.height / 2 - window.innerHeight / 2);
+      };
+      return centerDistance(a) - centerDistance(b);
+    });
+    const nextRow = candidates[0] || null;
+    const changed = nextRow && (!selectedRow || !sameVideoRow(nextRow, selectedRow));
+    selectedRow = nextRow;
+    taskVideos.forEach((video) => {
+      if (!selectedRow || !sameVideoRow(selectedRow, video)) {
+        video.pause();
+        startedVideos.delete(video);
+      } else {
+        if (changed) startedVideos.delete(video);
+        playWhenBuffered(video);
+      }
+    });
+  }
   const playback = new IntersectionObserver((entries) => {
     for (const entry of entries) {
       const video = entry.target;
-      if (entry.isIntersecting && entry.intersectionRatio >= 0.4) {
-        loadPoster(video);
-        if (!completedVideos.has(video)) video.play().catch(() => {});
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.65) {
+        visibleVideos.add(video);
       } else {
+        visibleVideos.delete(video);
+        startedVideos.delete(video);
         video.pause();
       }
     }
-  }, { threshold: [0, 0.4] });
-  document.querySelectorAll("#real-world video").forEach((video) => playback.observe(video));
+    selectAutoplayRow();
+  }, { threshold: [0, 0.65, 1] });
+  taskVideos.forEach((video) => {
+    buffering.observe(video);
+    playback.observe(video);
+  });
 } else {
   videos.forEach(loadPoster);
 }
