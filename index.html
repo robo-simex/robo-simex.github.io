@@ -10,6 +10,7 @@
   <meta property="og:image" content="assets/figures/website_image.png">
   <link rel="preload" href="assets/fonts/cormorant-garamond-normal-500-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/libre-baskerville-normal-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/ibm-plex-mono-normal-400-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -60,7 +61,10 @@
     <p class="eyebrow">Real-world qualitative results</p>
     <h2>Task completion on the physical robot</h2>
     <p class="body-text section-intro">Real-world rollouts of the adapted toolbox on the physical dual-arm YAM robot. All clips are shown at 8× speed.</p>
-    <h3>Barcode scanning</h3>
+    <div class="task-head">
+      <h3>Barcode scanning</h3>
+      <button type="button" class="code-toggle" aria-haspopup="dialog" aria-controls="code-barcode">View code</button>
+    </div>
     <div class="video-grid video-grid--2">
       <div>
         <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
@@ -73,7 +77,419 @@
         <p class="vc-caption">Barcode scanning · Rollout 2</p>
       </div>
     </div>
-    <h3>Plate to tote</h3>
+    <!-- CODE-PANEL:barcode:BEGIN -->
+    <dialog class="code-dialog" id="code-barcode" aria-labelledby="code-barcode-title">
+      <div class="code-dialog-head">
+        <div>
+          <p class="eyebrow">Toolbox and program</p>
+          <h3 id="code-barcode-title">Barcode scanning</h3>
+          <p class="code-instruction">&ldquo;Clear the tote. The source tote holds two different objects. Read both barcodes at the scanner and put both objects in the drop-off tote.&rdquo;</p>
+        </div>
+        <button type="button" class="code-dialog-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="code-pair">
+      <div class="code-pane code-pane--toolbox">
+        <div class="code-pane-head">
+          <span class="code-kind">Toolbox</span>
+          <span class="code-name">toolbox.py</span>
+          <span class="code-meta">10 primitives called · 6887 lines</span>
+        </div>
+        <pre><code class="language-python">def find_source_tote(refresh: bool = False) -&gt; dict | None:
+  &quot;&quot;&quot;Pose of the source tote, perceived from the wrist camera&#x27;s depth; None if it has not
+  been seen yet.&quot;&quot;&quot;
+  ...  # 10 lines
+
+def scanned_objects() -&gt; list[str]:
+  &quot;&quot;&quot;Names of the objects whose barcodes have been read so far in this rollout.&quot;&quot;&quot;
+  ...  # 15 lines
+
+def view_source_tote(arm: str = &quot;left&quot;, steps: int | None = None) -&gt; dict:
+  &quot;&quot;&quot;Park the hand where the wrist camera looks into the source tote.&quot;&quot;&quot;
+  ...  # 42 lines
+
+def find_objects(camera_name: str = &quot;left_wrist_cam&quot;) -&gt; list[dict]:
+  &quot;&quot;&quot;Every object in the source tote, segmented and measured from the wrist camera.
+  Shape-agnostic.&quot;&quot;&quot;
+  if not self.has_depth(camera_name):
+    ...
+    return []
+  pf = self.platform
+  rgb = np.ascontiguousarray(np.asarray(pf.camera_image(camera_name)))
+  ...
+  depth = np.asarray(pf.depth_image(camera_name), dtype=np.float32)
+  intr = pf.camera_intrinsics(camera_name)
+  pose = self._camera_pose_opencv(camera_name)
+  ...
+  cavity = self._source_cavity_xy()
+  floor_z = self._source_floor_z()
+  finder = self._wrist_finder()
+  sets, report = finder.object_point_sets(
+    rgb,
+    depth,
+    intr,
+    pose,
+    ee,
+    cavity_xy=cavity,
+    floor_z=floor_z,
+    ...
+  )
+  fits = [
+    (self._fit_plan_shape(pts), pts, mid)
+    for pts, mid in zip(sets, report[&quot;kept_mask_ids&quot;], strict=True)
+  ]
+  fits = [f for f in fits if f[0] is not None]
+  fits.sort(key=lambda f: (0 if f[0][&quot;graspable&quot;] else 1, f[0][&quot;centre_xy&quot;][0]))
+  out: list[dict] = [f[0] for f in fits]
+  ...
+  self.last_perception = report
+  ...
+  return out
+
+def wait(steps: int = 30) -&gt; None:
+  &quot;&quot;&quot;Hold the current command for a number of env steps.&quot;&quot;&quot;
+  ...  # 6 lines
+
+def set_gripper(arm: str, open_: bool, hold_steps: int = 5) -&gt; None:
+  &quot;&quot;&quot;Open or close the gripper on the named arm.&quot;&quot;&quot;
+  ...  # 11 lines
+
+def grasp_object(
+    arm: str,
+    obj: dict,
+    grasp_z: float | None = None,
+    seat_advance: float = 0.0,
+    pre_slew: bool = True,
+    vet: bool = True,
+    narrow_jaws: bool = False,
+) -&gt; dict:
+  &quot;&quot;&quot;Grasp one object from find_objects(); centre, jaw azimuth and grasp height all come
+  from its measurement.&quot;&quot;&quot;
+  self._held_obj = dict(obj)
+  if self._grasp_attempts &gt;= int(self._MAX_GRASP_ATTEMPTS):
+    ...
+    return {
+      &quot;ok&quot;: False,
+      &quot;reason&quot;: &quot;attempt_cap&quot;,
+      ...
+    }
+  self._grasp_attempts += 1
+  ...
+  top_z = float(obj[&quot;top_z&quot;])
+  psi = float(obj[&quot;grasp_azimuth_rad&quot;])
+  x, y = (float(v) for v in obj[&quot;centre_xy&quot;])
+  psi = self._round_grasp_azimuth(obj, psi)
+  gz = (
+    float(grasp_z)
+    if grasp_z is not None
+    else max(
+      self._GRASP_Z_MIN,
+      min(self._GRASP_Z_MAX, 0.5 * (self._CAVITY_FLOOR_Z + top_z)),
+    )
+  )
+  gz -= float(self._GRASP_Z_BIAS_M)
+  quat = self.topdown_grasp_quat(psi)
+  ...
+  pre_z = top_z + self._HAND_BELOW_SITE_M + self._PRE_GRASP_CLEAR_M
+  ...
+  if vet:
+    b = self.plan_pose((x, y, gz), arm, target_quat=quat)
+    a = self.plan_pose((x, y, pre_z), arm, target_quat=quat)
+    if a[&quot;pos_err_m&quot;] &gt; self._HOVER_PLAN_LEAN_M:
+      ...
+      for lean_deg in self._LEAN_DEGS:
+        lq = self._lean_toward_robot(self.topdown_grasp_quat(psi_l), lean_deg)
+        la = self.plan_pose((x, y, pre_z), arm, target_quat=lq)
+        lb = self.plan_pose((x, y, gz), arm, target_quat=lq)
+        if (
+          max(la[&quot;pos_err_m&quot;], lb[&quot;pos_err_m&quot;]) &lt;= self._VET_POS_TOL_M
+          and la[&quot;pos_err_m&quot;] &lt; a[&quot;pos_err_m&quot;]
+        ):
+          quat, a, b, lean_used, psi = lq, la, lb, lean_deg, psi_l
+          ...
+          break
+    ...
+    if b[&quot;pos_err_m&quot;] &gt; self._VET_POS_TOL_M:
+      ...
+      return {
+        &quot;ok&quot;: False,
+        &quot;reason&quot;: &quot;unreachable&quot;,
+        ...
+      }
+  ...
+  r = self.grasp_topdown(
+    arm,
+    (x, y),
+    psi,
+    grasp_z=gz,
+    ...
+    pre_z=pre_z,
+    pre_iters=strain_iters,
+    approach_quat=None if lean_used == 0.0 else quat,
+    object_geometry=obj,
+  )
+  if (not r[&quot;ok&quot;]) and r[&quot;reason&quot;] == &quot;pre_grasp&quot; and lean_used == 0.0:
+    ...
+    r = self.grasp_topdown(
+      ...
+      approach_quat=lq,
+      object_geometry=obj,
+    )
+    ...
+  return r
+
+def present_to_scanner(
+    arm: str,
+    max_steps: int = 60,
+    dither_steps: int = 12,
+    sweep_steps: int = 420,
+    restore_wrist: bool = True,
+) -&gt; bool:
+  &quot;&quot;&quot;Hold the grasped object at the scanner and search its facing until a new read latches.&quot;&quot;&quot;
+  already_read = set(self.scanned_objects())
+  ...
+  quat_entry = self.platform.ee_quat(arm)
+  tilted = False
+  flat = self._is_flat(self._held_obj)
+  ...
+  def _beep() -&gt; bool:
+    return bool(set(self.scanned_objects()) - already_read)
+
+  def _done(value: bool) -&gt; bool:
+    ...
+    if restore_wrist and (value or tilted):
+      if tilted:
+        self.set_gripper(arm, False, hold_steps=2)
+        self._tilt_wrist(arm, quat_entry)
+      if value and abs(float(self.platform.joint_pos(arm)[5]) - j6_entry) &gt; 0.02:
+        self._ramp_joint(arm, 5, j6_entry, self._PRESENT_AZ_RAMP_STEPS)
+      ...
+    return value
+
+  ox, oy, oz = self._READ_ORIGIN
+  read_point = np.array([ox - self._PRESENT_AXIS_DEPTH, oy, oz])
+
+  def _aim_payload(legs: int, iters: int) -&gt; bool:
+    for _ in range(legs):
+      if _beep():
+        return True
+      pay = np.asarray(self._payload_point(arm), dtype=float)
+      ee = np.asarray(self.platform.ee_pos(arm), dtype=float)
+      goal = read_point + (ee - pay)
+      err = float(np.linalg.norm(goal - ee))
+      if err &lt; self._PRESENT_AIM_TOL_M:
+        return False
+      ...
+      self.move_ee_to(
+        (float(leg[0]), float(leg[1]), float(leg[2])),
+        arm,
+        max_iters=iters,
+        tol=self._PRESENT_AIM_TOL_M,
+      )
+    return _beep()
+
+  if _aim_payload(6, max(30, int(max_steps))):
+    ...
+    return _done(True)
+  ...
+  def _azimuth_sweep(budget: int) -&gt; bool:
+    j6_0 = float(self.platform.joint_pos(arm)[5])
+    ...
+    for deg in self._PRESENT_AZ_STEPS_DEG:
+      ...
+      want = j6_0 + math.radians(deg)
+      ...
+      self._ramp_joint(arm, 5, want, self._PRESENT_AZ_RAMP_STEPS)
+      self.platform.wait(3)
+      ...
+      if _beep():
+        ...
+        return True
+    return False
+
+  if flat:
+    ...
+  else:
+    ...
+    if _azimuth_sweep(int(sweep_steps) // 2):
+      ...
+      return _done(True)
+    ...
+  for tilt in self._PRESENT_TILT_DEG:
+    rq = self._axis_angle_quat((0.0, 1.0, 0.0), math.radians(tilt))
+    ...
+    tilted = True
+    ...
+    t_out = self._tilt_wrist(arm, dq)
+    ...
+    if _beep():
+      ...
+      return _done(True)
+    if t_out[&quot;ori_err_rad&quot;] &gt; 0.5:
+      ...
+      continue
+    ...
+    if _aim_payload(3, 60):
+      ...
+      return _done(True)
+    ...
+    if _azimuth_sweep(int(sweep_steps) // 3):
+      ...
+      return _done(True)
+    ...
+  return _done(_beep() or bool(already_read))
+
+def regrasp_rotated(
+    arm: str,
+    delta_rad: float = math.pi / 2.0,
+    settle_steps: int = 40,
+) -&gt; dict:
+  &quot;&quot;&quot;Set the held object back down in the source tote, re-perceive it, and grasp it again at
+  a new azimuth.&quot;&quot;&quot;
+  ...
+  src = self._tote_centre(&quot;source&quot;)
+  put = None
+  objs: list[dict] = []
+  if (
+    self._is_flat(self._held_obj)
+    or (self._held_obj or {}).get(&quot;long_axis_rad&quot;) is not None
+  ):
+    put, objs = self._flip_until_down(arm, src, settle_steps=int(settle_steps))
+    if put is not None and not put[&quot;ok&quot;]:
+      ...
+      put = None
+  if put is None:
+    put = self.place_in_tote(
+      arm, tote_xy=src, require_scan=False, return_over_source=False
+    )
+  out[&quot;put_down&quot;] = put
+  if not put[&quot;ok&quot;]:
+    out[&quot;reason&quot;] = f&quot;put_down_{put[&#x27;reason&#x27;]}&quot;
+    ...
+    return out
+  if not objs:
+    self.platform.wait(int(settle_steps))
+    ...
+    ref = put.get(&quot;released_at&quot;) or self.platform.ee_pos(arm)
+    objs = self._look_for_dropped(arm, (ref[0], ref[1]))
+  out[&quot;found&quot;] = len(objs)
+  if not objs:
+    out[&quot;reason&quot;] = &quot;not_found_after_put_down&quot;
+    ...
+    return out
+  ref = put.get(&quot;released_at&quot;) or self.platform.ee_pos(arm)
+  obj = min(objs, key=lambda o: math.dist(o[&quot;centre_xy&quot;], (ref[0], ref[1])))
+  obj = dict(obj)
+  if obj.get(&quot;long_axis_rad&quot;) is None:
+    obj[&quot;grasp_azimuth_rad&quot;] = (
+      float(obj[&quot;grasp_azimuth_rad&quot;]) + float(delta_rad)
+    ) % math.pi
+    ...
+  self.set_gripper(arm, True, hold_steps=4)
+  g = self.grasp_object(arm, obj)
+  out[&quot;grasp&quot;] = g
+  out[&quot;ok&quot;] = bool(g[&quot;ok&quot;])
+  out[&quot;reason&quot;] = &quot;held&quot; if g[&quot;ok&quot;] else f&quot;grasp_{g[&#x27;reason&#x27;]}&quot;
+  ...
+  return out
+
+def place_in_tote(
+    arm: str,
+    tote_xy=None,
+    require_scan: bool = True,
+    scanned_before=None,
+    release_z: float | None = None,
+    carry_z: float | None = None,
+    return_over_source: bool = True,
+) -&gt; dict:
+  &quot;&quot;&quot;Carry the held object over a tote and release it inside the cavity.&quot;&quot;&quot;
+  ...
+  scanned_new = None
+  if require_scan:
+    before = set() if scanned_before is None else set(scanned_before)
+    scanned_new = sorted(set(self.scanned_objects()) - before)
+    if not scanned_new:
+      self._log(
+        &quot;place_in_tote: REFUSING to release — no NEW scan since the grasp &quot;
+        &quot;(pass require_scan=False only for a stow-without-scan task)&quot;
+      )
+      return {
+        &quot;ok&quot;: False,
+        &quot;reason&quot;: &quot;unscanned&quot;,
+        ...
+      }
+
+  ...
+  here = self.platform.ee_pos(arm)
+  inside = (
+    abs(float(here[0]) - cavity_centre[0]) &lt;= hx
+    and abs(float(here[1]) - cavity_centre[1]) &lt;= hy
+  )
+  if not inside:
+    ...
+    return {
+      &quot;ok&quot;: False,
+      &quot;reason&quot;: &quot;carry_short&quot;,
+      ...
+    }
+  ...</code></pre>
+        <p class="code-pane-note">The ten primitives this CAP calls, in call order; the five that do the work are cut to their key lines. The grasp vets its poses before moving, the scan sweeps and tilts the payload until a read latches, and the stow refuses to release an unscanned object.</p>
+      </div>
+      <div class="code-pane code-pane--cap">
+        <div class="code-pane-head">
+          <span class="code-kind">CAP script</span>
+          <span class="code-name">agent_script.py</span>
+          <span class="code-meta">41 of 79 lines</span>
+        </div>
+        <pre><code class="language-python">ARM = &quot;left&quot;
+NEEDED = 2
+MAX_PASSES = 8
+
+stowed = 0
+...
+
+for _pass in range(MAX_PASSES):
+    if stowed &gt;= NEEDED:
+        break
+    objs = tb.find_objects()
+    if not objs:
+        tb.view_source_tote(ARM)
+        tb.wait(5)
+        objs = tb.find_objects()
+    if not objs:
+        break
+    obj = objs[0]
+
+    tb.set_gripper(ARM, True, hold_steps=4)
+    g = tb.grasp_object(ARM, obj)
+    if g[&quot;reason&quot;] == &quot;attempt_cap&quot;:
+        break
+    if not g[&quot;ok&quot;]:
+        ...
+        continue
+
+    before = set(tb.scanned_objects())
+    tb.present_to_scanner(ARM)
+    if not new_reads(before):
+        r = tb.regrasp_rotated(ARM)
+        ...
+        tb.present_to_scanner(ARM)
+
+    if not new_reads(before):
+        tb.place_in_tote(ARM, tote_xy=source_xy(), require_scan=False)
+        continue
+
+    p = tb.place_in_tote(ARM, scanned_before=before)
+    if p[&quot;ok&quot;]:
+        stowed += 1</code></pre>
+        <p class="code-pane-note">Find, grasp, present to the scanner; judge the read by the set of scanned codes growing; regrasp rotated on a miss; put an object that still will not read back in the source tote instead of stowing it.</p>
+      </div>
+      </div>
+    </dialog>
+    <!-- CODE-PANEL:barcode:END -->
+    <div class="task-head">
+      <h3>Plate to tote</h3>
+      <button type="button" class="code-toggle" aria-haspopup="dialog" aria-controls="code-plate">View code</button>
+    </div>
     <div class="video-grid video-grid--2">
       <div>
         <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
@@ -86,7 +502,140 @@
         <p class="vc-caption">Plate to tote · Rollout 2</p>
       </div>
     </div>
-    <h3>Towel folding</h3>
+    <!-- CODE-PANEL:plate:BEGIN -->
+    <dialog class="code-dialog" id="code-plate" aria-labelledby="code-plate-title">
+      <div class="code-dialog-head">
+        <div>
+          <p class="eyebrow">Toolbox and program</p>
+          <h3 id="code-plate-title">Plate to tote</h3>
+          <p class="code-instruction">&ldquo;Clean the station by moving all four plates (green front-left, blue front-right, red back-left, yellow back-right) into the tote.&rdquo;</p>
+        </div>
+        <button type="button" class="code-dialog-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="code-pair">
+      <div class="code-pane code-pane--toolbox">
+        <div class="code-pane-head">
+          <span class="code-kind">Toolbox</span>
+          <span class="code-name">toolbox.py</span>
+          <span class="code-meta">3 primitives called · 1834 lines</span>
+        </div>
+        <pre><code class="language-python">def perceive_plates() -&gt; list[dict]:
+  &quot;&quot;&quot;Park both arms, then detect every plate on the table; re-detects once if an expected
+  colour is missing.&quot;&quot;&quot;
+  self.park_arms()
+  plates = self.find_table_plates()
+  seen = {d[&quot;name&quot;] for d in plates}
+  expected = {n for n in self._expected_names if n not in seen}
+  if expected:
+    ...
+    self.wait(6)
+    again = self.find_table_plates()
+    for d in again:
+      if d[&quot;name&quot;] in expected and d[&quot;name&quot;] not in seen:
+        plates.append(d)
+        seen.add(d[&quot;name&quot;])
+    self._last_plates = list(plates)
+  self._expected_names = set(seen)
+  return plates
+
+def get_step_count() -&gt; int:
+  &quot;&quot;&quot;Env steps elapsed in this rollout.&quot;&quot;&quot;
+  ...  # 3 lines
+
+def deliver_plate(plate_xy, arm: str | None = None, tote_xy=None) -&gt; dict:
+  &quot;&quot;&quot;Grasp a plate by its rim, carry it to the tote, release, then re-detect the table to
+  confirm delivery.&quot;&quot;&quot;
+  arm = self.arm_for_plate(plate_xy) if arm is None else arm
+  ...
+  g = self.grasp_plate_rim((px, py), arm)
+  if not g[&quot;grasped&quot;] and g[&quot;plan&quot;] is not None:
+    other = &quot;outboard&quot; if g[&quot;plan&quot;][&quot;side&quot;] == &quot;inboard&quot; else &quot;inboard&quot;
+    ...
+    g2 = self.grasp_plate_rim((px, py), arm, side=other)
+    if g2[&quot;plan&quot;] is not None:
+      g = g2
+  ...
+  if not g[&quot;grasped&quot;]:
+    self.set_gripper(arm, True, hold_steps=2)
+    out[&quot;plates&quot;] = self.perceive_plates()
+    return out
+  ...
+  MAX_PLACE_TRIES = 2
+  for _try in range(MAX_PLACE_TRIES):
+    p = self.place_in_tote(
+      arm,
+      tote_xy=self._tote_cache,
+      flip=g[&quot;plan&quot;][&quot;flip&quot;],
+      side_used=g[&quot;plan&quot;][&quot;side&quot;],
+    )
+    rise_loss = p.get(&quot;stage&quot;) == &quot;rise&quot;
+    ...
+    if rise_loss:
+      self.stow_arm(arm)
+    plates = self.perceive_plates()
+    out[&quot;plates&quot;] = plates
+    ...
+    remaining = [d for d in same if d not in inside]
+    out[&quot;delivered&quot;] = (not remaining) and not rise_loss
+    if out[&quot;delivered&quot;]:
+      out[&quot;stage&quot;] = &quot;released&quot;
+      break
+    out[&quot;stage&quot;] = &quot;lost_in_rise&quot; if rise_loss else &quot;lost_in_carry&quot;
+    ...
+    if remaining and _try + 1 &lt; MAX_PLACE_TRIES:
+      ...
+      g = self.grasp_plate_rim((rx, ry), arm)
+      ...
+      continue
+    break
+  ...
+  return out</code></pre>
+        <p class="code-pane-note">The three primitives this CAP calls. Perception re-detects once when an expected colour is missing; delivery grasps the rim, carries, releases and re-detects, and counts the plate only if none of its colour remains.</p>
+      </div>
+      <div class="code-pane code-pane--cap">
+        <div class="code-pane-head">
+          <span class="code-kind">CAP script</span>
+          <span class="code-name">agent_script.py</span>
+          <span class="code-meta">29 of 43 lines</span>
+        </div>
+        <pre><code class="language-python">targets = [&quot;green&quot;, &quot;blue&quot;, &quot;red&quot;, &quot;yellow&quot;]
+FRONT = {&quot;green&quot;, &quot;blue&quot;}
+LEFT_SIDE = {&quot;green&quot;, &quot;red&quot;}
+
+plates = tb.perceive_plates()
+
+delivered = {}
+for name in targets:
+    cand = [d for d in plates if d[&quot;name&quot;] == name]
+    if not cand:
+        cand = [d for d in plates if (d[&quot;world_xy&quot;][1] &gt; 0) == (name in LEFT_SIDE)]
+        cand.sort(key=lambda d: d[&quot;world_xy&quot;][0], reverse=(name not in FRONT))
+    if not cand:
+        delivered[name] = False
+        continue
+
+    xy = cand[0][&quot;world_xy&quot;]
+    res = tb.deliver_plate(xy)
+    plates = res[&quot;plates&quot;]
+
+    still = [d for d in plates if d[&quot;name&quot;] == name]
+    if still and not res[&quot;delivered&quot;]:
+        xy2 = still[0][&quot;world_xy&quot;]
+        res = tb.deliver_plate(xy2)
+        plates = res[&quot;plates&quot;]
+    delivered[name] = bool(res[&quot;delivered&quot;])
+
+print(&quot;summary:&quot;, delivered, &quot;remaining on table:&quot;,
+      [d[&quot;name&quot;] for d in plates], &quot;steps:&quot;, tb.get_step_count())</code></pre>
+        <p class="code-pane-note">One perception call, then one delivery per colour in a fixed order, reusing the detection list each delivery returns. A colour still on the table after its delivery gets a single retry at its new location.</p>
+      </div>
+      </div>
+    </dialog>
+    <!-- CODE-PANEL:plate:END -->
+    <div class="task-head">
+      <h3>Towel folding</h3>
+      <button type="button" class="code-toggle" aria-haspopup="dialog" aria-controls="code-towel">View code</button>
+    </div>
     <div class="video-grid video-grid--2">
       <div>
         <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
@@ -99,6 +648,143 @@
         <p class="vc-caption">Two-fold towel task · Rollout 2</p>
       </div>
     </div>
+    <!-- CODE-PANEL:towel:BEGIN -->
+    <dialog class="code-dialog" id="code-towel" aria-labelledby="code-towel-title">
+      <div class="code-dialog-head">
+        <div>
+          <p class="eyebrow">Toolbox and program</p>
+          <h3 id="code-towel-title">Towel folding</h3>
+          <p class="code-instruction">&ldquo;Fold the towel twice, into quarters: fold it in half, then fold the result in half again along the other axis. Keep it on the table.&rdquo;</p>
+        </div>
+        <button type="button" class="code-dialog-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="code-pair">
+      <div class="code-pane code-pane--toolbox">
+        <div class="code-pane-head">
+          <span class="code-kind">Toolbox</span>
+          <span class="code-name">toolbox.py</span>
+          <span class="code-meta">3 primitives called · 1639 lines</span>
+        </div>
+        <pre><code class="language-python">def towel_frame(det: dict | None = None, camera_name: str = &quot;top_cam&quot;) -&gt; dict | None:
+  &quot;&quot;&quot;The towel&#x27;s four edges keyed by world side (far, near, left, right), plus its centre,
+  size and fold ratio.&quot;&quot;&quot;
+  if det is None:
+    det = self.find_towel(camera_name)
+  if det is None:
+    return None
+  c = [np.asarray(p, dtype=float) for p in det[&quot;corners&quot;]]
+  centre = np.mean(np.stack(c), axis=0)
+  edges = []
+  for i in range(4):
+    a, b = c[i], c[(i + 1) % 4]
+    mid = 0.5 * (a + b)
+    out = mid - centre
+    out = out / (np.linalg.norm(out) or 1.0)
+    along = b - a
+    length = float(np.linalg.norm(along))
+    along = along / (length or 1.0)
+    edges.append({&quot;corners&quot;: [tuple(map(float, a)), tuple(map(float, b))], &quot;mid&quot;: tuple(map(float, mid)),
+                  &quot;out&quot;: tuple(map(float, out)), &quot;along&quot;: tuple(map(float, along)), &quot;length&quot;: length})
+  frame: dict = {}
+  used: set = set()
+  for side, d in sorted(_SIDE_DIR.items(), key=lambda kv: kv[0]):
+    best, best_dot = None, -2.0
+    for i, e in enumerate(edges):
+      if i in used:
+        continue
+      dot = e[&quot;out&quot;][0] * d[0] + e[&quot;out&quot;][1] * d[1]
+      if dot &gt; best_dot:
+        best, best_dot = i, dot
+    used.add(best)
+    frame[side] = edges[best]
+  size_x = float(np.linalg.norm(np.subtract(frame[&quot;far&quot;][&quot;mid&quot;], frame[&quot;near&quot;][&quot;mid&quot;])))
+  size_y = float(np.linalg.norm(np.subtract(frame[&quot;left&quot;][&quot;mid&quot;], frame[&quot;right&quot;][&quot;mid&quot;])))
+  ...
+  area = max(size_x * size_y, 1e-6)
+  frame.update({
+    &quot;yaw_deg&quot;: float(math.degrees(math.atan2(frame[&quot;far&quot;][&quot;out&quot;][1], frame[&quot;far&quot;][&quot;out&quot;][0]))),
+    &quot;centre&quot;: tuple(map(float, centre)),
+    &quot;size_x&quot;: size_x,
+    &quot;size_y&quot;: size_y,
+    ...
+    &quot;layers&quot;: int(max(1, round(0.34 * 0.34 / area))),
+    &quot;fold_ratio&quot;: float(0.34 * 0.34 / area),
+    ...
+  })
+  ...
+  return frame
+
+def fold_edge(
+    side: str,
+    arms=&quot;auto&quot;,
+    grasp=&quot;corners&quot;,
+    carry_z: float | None = None,
+    settle_steps: int = 20,
+    verify: bool = True,
+    inboard: float | None = None,
+    guard: bool = True,
+    correct: bool = True,
+    tighten: bool = False,
+    sweep: float | None = None,
+    across=None,
+) -&gt; dict:
+  &quot;&quot;&quot;Fold the towel in half by carrying one edge onto the opposite edge. Closed loop.&quot;&quot;&quot;
+  before = self.towel_frame()
+  ...
+  edge, opp = self._pick_edges(before, side, across)
+  carry_vec = self._carry_vec(edge, opp)
+  res[&quot;carry_vec&quot;] = tuple(map(float, carry_vec))
+  two_hand_ok = side in self.TWO_HAND_SIDES
+  if arms == &quot;auto&quot;:
+    if two_hand_ok:
+      use = [&quot;left&quot;, &quot;right&quot;]
+    elif abs(edge[&quot;out&quot;][1]) &gt; 0.5:
+      use = [(&quot;left&quot; if edge[&quot;out&quot;][1] &gt; 0 else &quot;right&quot;)]
+    else:
+      use = None
+  else:
+    use = list(arms)
+  ...
+
+def get_step_count() -&gt; int:
+  &quot;&quot;&quot;Env steps elapsed in this rollout.&quot;&quot;&quot;
+  ...  # 3 lines</code></pre>
+        <p class="code-pane-note">The three primitives this CAP calls. The frame labels the towel&#x27;s edges by their outward normals, so it works on a yawed or folded towel; one fold is one closed-loop call that picks its edge relative to the previous crease.</p>
+      </div>
+      <div class="code-pane code-pane--cap">
+        <div class="code-pane-head">
+          <span class="code-kind">CAP script</span>
+          <span class="code-name">agent_script.py</span>
+          <span class="code-meta">23 of 50 lines</span>
+        </div>
+        <pre><code class="language-python">fr0 = _report(&quot;start&quot;)
+...
+size_x0, size_y0 = fr0[&quot;size_x&quot;], fr0[&quot;size_y&quot;]
+
+r1 = tb.fold_edge(&quot;far&quot;)
+across = r1.get(&quot;carry_vec&quot;)
+fr1 = r1[&quot;after&quot;] if r1[&quot;after&quot;] is not None else _report(&quot;after fold1&quot;)
+
+if fr1 is not None and fr1[&quot;size_x&quot;] &gt; 0.72 * size_x0 and tb.get_step_count() &lt; 260:
+  r1b = tb.fold_edge(&quot;near&quot;)
+  if r1b.get(&quot;carry_vec&quot;) is not None and r1b[&quot;ok&quot;]:
+    across = r1b[&quot;carry_vec&quot;]
+  fr1 = r1b[&quot;after&quot;] if r1b[&quot;after&quot;] is not None else fr1
+
+side2 = &quot;left&quot; if fr1[&quot;centre&quot;][1] &gt;= 0.0 else &quot;right&quot;
+r2 = tb.fold_edge(side2, across=across)
+fr2 = r2[&quot;after&quot;] if r2[&quot;after&quot;] is not None else _report(&quot;after fold2&quot;)
+
+if fr2 is not None and fr2[&quot;size_y&quot;] &gt; 0.70 * size_y0 and tb.get_step_count() &lt; 420:
+  other = &quot;right&quot; if side2 == &quot;left&quot; else &quot;left&quot;
+  r2b = tb.fold_edge(other, across=across)
+
+_report(&quot;final&quot;)</code></pre>
+        <p class="code-pane-note">Two fold calls. The second passes the first fold&#x27;s carry direction as across. Each fold gets one retry, gated on the measured towel size and the step budget.</p>
+      </div>
+      </div>
+    </dialog>
+    <!-- CODE-PANEL:towel:END -->
   </div>
 </section>
 
@@ -367,6 +1053,17 @@ if ("IntersectionObserver" in window) {
   videos.forEach(loadPoster);
 }
 </script>
+
+<script>
+for (const btn of document.querySelectorAll(".code-toggle")) {
+  const dlg = document.getElementById(btn.getAttribute("aria-controls"));
+  btn.addEventListener("click", () => dlg.showModal());
+  dlg.querySelector(".code-dialog-close").addEventListener("click", () => dlg.close());
+  dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
 
 </body>
 </html>

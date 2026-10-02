@@ -1,0 +1,104 @@
+{
+ "barcode": [
+  {
+   "name": "find_source_tote",
+   "args": "self, refresh: bool=False",
+   "ret": "dict | None",
+   "body_lines": 10
+  },
+  {
+   "name": "scanned_objects",
+   "args": "self",
+   "ret": "list[str]",
+   "body_lines": 15
+  },
+  {
+   "name": "view_source_tote",
+   "args": "self, arm: str='left', steps: int | None=None",
+   "ret": "dict",
+   "body_lines": 42
+  },
+  {
+   "name": "find_objects",
+   "args": "self, camera_name: str='left_wrist_cam'",
+   "ret": "list[dict]",
+   "body_lines": 128
+  },
+  {
+   "name": "wait",
+   "args": "self, steps: int=30",
+   "ret": "None",
+   "body_lines": 6
+  },
+  {
+   "name": "set_gripper",
+   "args": "self, arm: str, open_: bool, hold_steps: int=5",
+   "ret": "None",
+   "body_lines": 11
+  },
+  {
+   "name": "grasp_object",
+   "args": "self, arm: str, obj: dict, grasp_z: float | None=None, seat_advance: float=0.0, pre_slew: bool=True, vet: bool=True, narrow_jaws: bool=False",
+   "ret": "dict",
+   "body_lines": 285
+  },
+  {
+   "name": "present_to_scanner",
+   "args": "self, arm: str, max_steps: int=60, dither_steps: int=12, sweep_steps: int=420, restore_wrist: bool=True",
+   "ret": "bool",
+   "body_lines": 272
+  },
+  {
+   "name": "regrasp_rotated",
+   "args": "self, arm: str, delta_rad: float=math.pi / 2.0, settle_steps: int=40",
+   "ret": "dict",
+   "body_lines": 134
+  },
+  {
+   "name": "place_in_tote",
+   "args": "self, arm: str, tote_xy=None, require_scan: bool=True, scanned_before=None, release_z: float | None=None, carry_z: float | None=None, return_over_source: bool=True",
+   "ret": "dict",
+   "body_lines": 225
+  }
+ ],
+ "plate": [
+  {
+   "name": "perceive_plates",
+   "args": "self",
+   "ret": "list[dict]",
+   "body_lines": 25
+  },
+  {
+   "name": "get_step_count",
+   "args": "self",
+   "ret": "int",
+   "body_lines": 3
+  },
+  {
+   "name": "deliver_plate",
+   "args": "self, plate_xy, arm: str | None=None, tote_xy=None",
+   "ret": "dict",
+   "body_lines": 142
+  }
+ ],
+ "towel": [
+  {
+   "name": "towel_frame",
+   "args": "self, det: dict | None=None, camera_name: str='top_cam'",
+   "ret": "dict | None",
+   "body_lines": 67
+  },
+  {
+   "name": "fold_edge",
+   "args": "self, side: str, arms='auto', grasp='corners', carry_z: float | None=None, settle_steps: int=20, verify: bool=True, inboard: float | None=None, guard: bool=True, correct: bool=True, tighten: bool=False, sweep: float | None=None, across=None",
+   "ret": "dict",
+   "body_lines": 349
+  },
+  {
+   "name": "get_step_count",
+   "args": "self",
+   "ret": "int",
+   "body_lines": 3
+  }
+ ]
+}
