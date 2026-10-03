@@ -42,15 +42,22 @@
       Coding agents are good at reasoning about goals in the digital world, but bringing them onto robots has been hard.
       Writing a policy in one shot fails because the model does not understand the robot or the physics well enough, and
       iterating directly on hardware is slow, costly and unsafe. <strong>SimEX</strong> uses simulation as the
-      laboratory. In <em>Stage 1</em> a coding agent runs open-ended probe-and-optimize cycles in a simulated sandbox,
-      inventing its own tasks and building a reusable robot toolbox. In <em>Stage 2</em> it adapts that toolbox to the
-      real robot with only five physical trials, replaying each trial in simulation to diagnose the failure and screening
+      laboratory. In <em>Stage 1</em> a <strong>probe-and-optimize harness</strong> drives a coding agent through
+      open-ended cycles in a simulated sandbox: it probes the toolbox on tasks it invents itself, turns the failures into
+      a sub-goal, and optimizes the toolbox until that sub-goal passes. In <em>Stage 2</em> it adapts that toolbox to the
+      real robot with <strong>only five physical trials</strong>, replaying each trial in simulation to diagnose the failure and screening
       several candidate repairs before spending the next trial. No demonstrations, no hand-written skills, and about ten
       minutes of robot time per task.
     </p>
     <figure class="plain">
       <img src="assets/figures/website_image.png" width="1859" height="846" alt="SimEX: discover robot skills in simulation, build a reusable toolbox of code and usage knowledge, and adapt in the real world through real trials and simulation tests.">
     </figure>
+    <p class="body-text">
+      This page shows what SimEX produced. In every video, the robot is controlled by a <strong>Python script the coding
+      agent wrote directly, in the code-as-policies (CaP) setting</strong>: no learned policy and no teleoperation. The
+      script calls the toolbox the agent built in Stage 1 and adapted in Stage 2, and the View code button beside each task
+      opens the script that ran and the primitives it calls.
+    </p>
   </div>
 </section>
 
@@ -81,7 +88,7 @@
     <dialog class="code-dialog" id="code-barcode" aria-labelledby="code-barcode-title">
       <div class="code-dialog-head">
         <div>
-          <p class="eyebrow">Toolbox and program</p>
+          <p class="eyebrow">Toolbox and CaP script</p>
           <h3 id="code-barcode-title">Barcode scanning</h3>
           <p class="code-instruction">&ldquo;Clear the tote. The source tote holds two different objects. Read both barcodes at the scanner and put both objects in the drop-off tote.&rdquo;</p>
         </div>
@@ -432,11 +439,11 @@ def place_in_tote(
       ...
     }
   ...</code></pre>
-        <p class="code-pane-note">The ten primitives this CAP calls, in call order; the five that do the work are cut to their key lines. The grasp vets its poses before moving, the scan sweeps and tilts the payload until a read latches, and the stow refuses to release an unscanned object.</p>
+        <p class="code-pane-note">The ten primitives this CaP calls, with the five that do the work cut to their key lines. Grasps are vetted; the stow refuses unscanned objects.</p>
       </div>
       <div class="code-pane code-pane--cap">
         <div class="code-pane-head">
-          <span class="code-kind">CAP script</span>
+          <span class="code-kind">CaP script</span>
           <span class="code-name">agent_script.py</span>
           <span class="code-meta">41 of 79 lines</span>
         </div>
@@ -481,7 +488,7 @@ for _pass in range(MAX_PASSES):
     p = tb.place_in_tote(ARM, scanned_before=before)
     if p[&quot;ok&quot;]:
         stowed += 1</code></pre>
-        <p class="code-pane-note">Find, grasp, present to the scanner; judge the read by the set of scanned codes growing; regrasp rotated on a miss; put an object that still will not read back in the source tote instead of stowing it.</p>
+        <p class="code-pane-note">Find, grasp, present to the scanner; a read counts once the scanned-code set grows. On a miss, regrasp rotated; if it still fails, return it to the source tote.</p>
       </div>
       </div>
     </dialog>
@@ -506,7 +513,7 @@ for _pass in range(MAX_PASSES):
     <dialog class="code-dialog" id="code-plate" aria-labelledby="code-plate-title">
       <div class="code-dialog-head">
         <div>
-          <p class="eyebrow">Toolbox and program</p>
+          <p class="eyebrow">Toolbox and CaP script</p>
           <h3 id="code-plate-title">Plate to tote</h3>
           <p class="code-instruction">&ldquo;Clean the station by moving all four plates (green front-left, blue front-right, red back-left, yellow back-right) into the tote.&rdquo;</p>
         </div>
@@ -590,11 +597,11 @@ def deliver_plate(plate_xy, arm: str | None = None, tote_xy=None) -&gt; dict:
     break
   ...
   return out</code></pre>
-        <p class="code-pane-note">The three primitives this CAP calls. Perception re-detects once when an expected colour is missing; delivery grasps the rim, carries, releases and re-detects, and counts the plate only if none of its colour remains.</p>
+        <p class="code-pane-note">The three primitives this CaP calls. Perception re-detects missing colours; delivery grasps the rim, carries, releases, and counts the plate once it is gone.</p>
       </div>
       <div class="code-pane code-pane--cap">
         <div class="code-pane-head">
-          <span class="code-kind">CAP script</span>
+          <span class="code-kind">CaP script</span>
           <span class="code-name">agent_script.py</span>
           <span class="code-meta">29 of 43 lines</span>
         </div>
@@ -627,7 +634,7 @@ for name in targets:
 
 print(&quot;summary:&quot;, delivered, &quot;remaining on table:&quot;,
       [d[&quot;name&quot;] for d in plates], &quot;steps:&quot;, tb.get_step_count())</code></pre>
-        <p class="code-pane-note">One perception call, then one delivery per colour in a fixed order, reusing the detection list each delivery returns. A colour still on the table after its delivery gets a single retry at its new location.</p>
+        <p class="code-pane-note">One perception call, then one delivery per colour in a fixed order, reusing the detections each delivery returns. A plate left on the table gets one retry.</p>
       </div>
       </div>
     </dialog>
@@ -647,12 +654,21 @@ print(&quot;summary:&quot;, delivered, &quot;remaining on table:&quot;,
           <video data-poster="assets/videos/real/task video/good_2fold_2_8x.jpg" muted playsinline controls preload="none" aria-label="Two-fold towel task · Rollout 2"><source src="assets/videos/real/task video/good_2fold_2_8x.mp4" type="video/mp4"></video></div>
         <p class="vc-caption">Two-fold towel task · Rollout 2</p>
       </div>
+      <aside class="video-pair sim-note" aria-labelledby="towel-sandbox-title">
+        <div class="sim-note-text">
+          <p>Notice that these behaviors were obtained with a simulator that does not match the real world very well: the towel sandbox has <strong>fake grasping</strong>, <strong>fake arms</strong>, and <strong>no camera rendering</strong>. Despite this, SimEX still discovered the structure of the skill in it, and a handful of real trials in <em>Stage 2</em> corrected what the sandbox got wrong. These results showcase the ability of SimEX to extract transferable skills from a coarse simulator and to close the remaining gap on the real robot.</p>
+        </div>
+        <figure class="sim-note-media">
+          <div class="video-wrap"><span class="data-label sim">simulation sandbox · FLASH</span>
+            <video data-poster="assets/videos/sim/posters/towel_sandbox_flash_fold_half.jpg" muted playsinline controls preload="none" aria-label="Towel fold in the FLASH simulation sandbox"><source src="assets/videos/sim/towel_sandbox_flash_fold_half.mp4" type="video/mp4"></video></div>
+        </figure>
+      </aside>
     </div>
     <!-- CODE-PANEL:towel:BEGIN -->
     <dialog class="code-dialog" id="code-towel" aria-labelledby="code-towel-title">
       <div class="code-dialog-head">
         <div>
-          <p class="eyebrow">Toolbox and program</p>
+          <p class="eyebrow">Toolbox and CaP script</p>
           <h3 id="code-towel-title">Towel folding</h3>
           <p class="code-instruction">&ldquo;Fold the towel twice, into quarters: fold it in half, then fold the result in half again along the other axis. Keep it on the table.&rdquo;</p>
         </div>
@@ -749,11 +765,11 @@ def fold_edge(
 def get_step_count() -&gt; int:
   &quot;&quot;&quot;Env steps elapsed in this rollout.&quot;&quot;&quot;
   ...  # 3 lines</code></pre>
-        <p class="code-pane-note">The three primitives this CAP calls. The frame labels the towel&#x27;s edges by their outward normals, so it works on a yawed or folded towel; one fold is one closed-loop call that picks its edge relative to the previous crease.</p>
+        <p class="code-pane-note">The three primitives this CaP calls. The frame labels towel edges by outward normals, so it works yawed or folded; each fold is one closed-loop call.</p>
       </div>
       <div class="code-pane code-pane--cap">
         <div class="code-pane-head">
-          <span class="code-kind">CAP script</span>
+          <span class="code-kind">CaP script</span>
           <span class="code-name">agent_script.py</span>
           <span class="code-meta">23 of 50 lines</span>
         </div>
@@ -794,7 +810,7 @@ _report(&quot;final&quot;)</code></pre>
   <div class="container container--wide">
     <p class="eyebrow">Real-world qualitative results</p>
     <h2>Emergent behaviors</h2>
-    <p class="body-text section-intro">None of the behaviors below were specified. They emerged from the agent's own probe-and-optimize cycles in simulation and its repairs after real trials.</p>
+    <p class="body-text section-intro">None of the behaviors below were specified. They emerged from the probe-and-optimize harness in simulation and the agent's repairs after real trials.</p>
     <div class="video-grid video-grid--2">
       <div>
         <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
@@ -823,7 +839,7 @@ _report(&quot;final&quot;)</code></pre>
         <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
           <video data-poster="assets/videos/real/emergent_behavior/edge/plate_left_8x.jpg" muted playsinline controls preload="none" aria-label="Plate at the left edge"><source src="assets/videos/real/emergent_behavior/edge/plate_left_8x.mp4" type="video/mp4"></video></div>
         </div>
-        <figcaption id="plate-grasp-caption" class="vc-caption">The left and right videos show the agent grasping the plate from different sides based on its distance from the tote, avoiding collisions with the tote or wall.</figcaption>
+        <figcaption id="plate-grasp-caption" class="vc-caption"><span class="video-task">Choosing the grasp side.</span> The left and right videos show the agent grasping the plate from different sides based on its distance from the tote, avoiding collisions with the tote or wall.</figcaption>
       </figure>
     </div>
   </div>
@@ -835,17 +851,12 @@ _report(&quot;final&quot;)</code></pre>
   <div class="container container--wide">
     <p class="eyebrow">Real-world qualitative results</p>
     <h2>Instruction following and multi-task capabilities</h2>
-    <p class="body-text section-intro">The same toolbox, a new instruction. Here we change the task at deployment time and let the coding agent write a fresh program against the toolbox it built.</p>
+    <p class="body-text section-intro">Here the toolbox stays the same and only the instruction changes. We set a new task at deployment time, and the coding agent writes a fresh CaP script against the toolbox it built.</p>
     <div class="video-grid video-grid--2">
       <div>
         <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
           <video data-poster="assets/videos/real/instruction_following/Good_2object_mixed_objects_scan_and_transfer_IMG_2452_8x.jpg" muted playsinline controls preload="none" aria-label="Scan two objects and place them in the destination tote."><source src="assets/videos/real/instruction_following/Good_2object_mixed_objects_scan_and_transfer_IMG_2452_8x.mp4" type="video/mp4"></video></div>
         <p class="vc-caption">“Scan two objects and place them in the destination tote.”</p>
-      </div>
-      <div>
-        <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
-          <video data-poster="assets/videos/real/instruction_following/good_one_object_packaged_objects_scan_and_transfer_IMG_2460_8x.jpg" muted playsinline controls preload="none" aria-label="Scan one object and place it in the destination tote."><source src="assets/videos/real/instruction_following/good_one_object_packaged_objects_scan_and_transfer_IMG_2460_8x.mp4" type="video/mp4"></video></div>
-        <p class="vc-caption">“Scan one object and place it in the destination tote.”</p>
       </div>
       <div>
         <div class="video-wrap"><span class="data-label real">real robot · 8×</span>
@@ -874,9 +885,334 @@ _report(&quot;final&quot;)</code></pre>
     <h2>Sim-to-sim behaviors</h2>
     <p class="body-text section-intro">
       The controlled sim-to-sim experiments in the paper use an independently implemented simulator as the stand-in for the robot:
-      Isaac Sim for barcode scanning and plate to tote, MJWarp Flex for towel folding. Below, two successful rollouts of
-      the adapted toolbox on the held-out tasks of each family.
+      Isaac Sim for barcode scanning and plate to tote, MJWarp Flex for towel folding. For each task family, the curves show
+      success rate rising through the Stage 1 probe-and-optimize cycles in simulation and across the five Stage 2 adaptation
+      trials on the stand-in. Below each pair of curves, we show two rollouts of the adapted toolbox on each task.
     </p>
+    <!-- SIM-CURVES:BEGIN -->
+<template id="sim-curves-barcode">
+<figure class="curve-pair">
+  <div class="curve-panel curve-panel--s1">
+    <p class="curve-title"><span class="curve-stage">Stage 1</span>Open-ended autoresearch in simulation</p>
+<svg class="curve curve--s1" viewBox="0 0 600 250" role="img" aria-label="Stage 1: sub-goal success rate over the optimize iterations of the paper&#x27;s barcode autoresearch island">
+<rect class="c-band" x="191.9" y="30" width="83.4" height="174"/>
+<rect class="c-band" x="358.7" y="30" width="83.4" height="174"/>
+<rect class="c-band" x="525.5" y="30" width="62.5" height="174"/>
+<line class="c-grid" x1="46" y1="204.0" x2="588" y2="204.0"/>
+<text class="c-tick" x="40" y="204.0" text-anchor="end" dominant-baseline="middle">0</text>
+<line class="c-grid" x1="46" y1="117.0" x2="588" y2="117.0"/>
+<text class="c-tick" x="40" y="117.0" text-anchor="end" dominant-baseline="middle">50</text>
+<line class="c-grid" x1="46" y1="30.0" x2="588" y2="30.0"/>
+<text class="c-tick" x="40" y="30.0" text-anchor="end" dominant-baseline="middle">100%</text>
+<text class="c-axis" transform="translate(12 117.0) rotate(-90)" text-anchor="middle" dominant-baseline="middle">success rate</text>
+<text class="c-axis" x="317.0" y="242" text-anchor="middle">optimize iteration</text>
+<polyline class="c-line-s1" points="77.3,169.2 98.1,169.2 119.0,169.2 139.8,117.0 160.7,99.6 181.5,82.2"/>
+<polyline class="c-line-s1" points="223.2,151.8 244.0,82.2 264.9,30.0"/>
+<polyline class="c-line-s1" points="306.6,204.0 327.4,186.6 348.3,186.6"/>
+<polyline class="c-line-s1" points="390.0,134.4 410.8,117.0 431.7,64.8"/>
+<polyline class="c-line-s1" points="473.3,99.6 494.2,82.2 515.0,47.4"/>
+<polyline class="c-line-s1" points="556.7,64.8 577.6,64.8"/>
+<text class="c-tick" x="77.3" y="215" text-anchor="middle" dominant-baseline="middle">1</text>
+<text class="c-tick" x="98.1" y="215" text-anchor="middle" dominant-baseline="middle">2</text>
+<text class="c-tick" x="119.0" y="215" text-anchor="middle" dominant-baseline="middle">3</text>
+<text class="c-tick" x="139.8" y="215" text-anchor="middle" dominant-baseline="middle">4</text>
+<text class="c-tick" x="160.7" y="215" text-anchor="middle" dominant-baseline="middle">5</text>
+<text class="c-tick" x="181.5" y="215" text-anchor="middle" dominant-baseline="middle">6</text>
+<text class="c-tick" x="223.2" y="215" text-anchor="middle" dominant-baseline="middle">7</text>
+<text class="c-tick" x="244.0" y="215" text-anchor="middle" dominant-baseline="middle">8</text>
+<text class="c-tick" x="264.9" y="215" text-anchor="middle" dominant-baseline="middle">9</text>
+<text class="c-tick" x="306.6" y="215" text-anchor="middle" dominant-baseline="middle">10</text>
+<text class="c-tick" x="327.4" y="215" text-anchor="middle" dominant-baseline="middle">11</text>
+<text class="c-tick" x="348.3" y="215" text-anchor="middle" dominant-baseline="middle">12</text>
+<text class="c-tick" x="390.0" y="215" text-anchor="middle" dominant-baseline="middle">13</text>
+<text class="c-tick" x="410.8" y="215" text-anchor="middle" dominant-baseline="middle">14</text>
+<text class="c-tick" x="431.7" y="215" text-anchor="middle" dominant-baseline="middle">15</text>
+<text class="c-tick" x="473.3" y="215" text-anchor="middle" dominant-baseline="middle">16</text>
+<text class="c-tick" x="494.2" y="215" text-anchor="middle" dominant-baseline="middle">17</text>
+<text class="c-tick" x="515.0" y="215" text-anchor="middle" dominant-baseline="middle">18</text>
+<text class="c-tick" x="556.7" y="215" text-anchor="middle" dominant-baseline="middle">19</text>
+<text class="c-tick" x="577.6" y="215" text-anchor="middle" dominant-baseline="middle">20</text>
+<path class="c-probe" d="M56.4 210.5 L60.9 215.0 L56.4 219.5 L51.9 215.0 Z"><title>probe 1: 25% on fresh tasks · new sub-goal: top-down bottle</title></path>
+<rect class="c-mark-s1" x="73.5" y="165.4" width="7.5" height="7.5"><title>cycle 1 · optimize iteration 1 · 20% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="94.4" y="165.4" width="7.5" height="7.5"><title>cycle 1 · optimize iteration 2 · 20% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="115.2" y="165.4" width="7.5" height="7.5"><title>cycle 1 · optimize iteration 3 · 20% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="136.1" y="113.2" width="7.5" height="7.5"><title>cycle 1 · optimize iteration 4 · 50% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="156.9" y="95.9" width="7.5" height="7.5"><title>cycle 1 · optimize iteration 5 · 60% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="177.8" y="78.5" width="7.5" height="7.5"><title>cycle 1 · optimize iteration 6 · 70% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M202.3 210.5 L206.8 215.0 L202.3 219.5 L197.8 215.0 Z"><title>probe 2: 57% on fresh tasks · new sub-goal: label-down prism</title></path>
+<rect class="c-mark-s1" x="219.4" y="148.1" width="7.5" height="7.5"><title>cycle 2 · optimize iteration 7 · 30% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="240.3" y="78.5" width="7.5" height="7.5"><title>cycle 2 · optimize iteration 8 · 70% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="261.1" y="26.2" width="7.5" height="7.5"><title>cycle 2 · optimize iteration 9 · 100% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M285.7 210.5 L290.2 215.0 L285.7 219.5 L281.2 215.0 Z"><title>probe 3: 43% on fresh tasks · new sub-goal: label-down hex</title></path>
+<rect class="c-mark-s1" x="302.8" y="200.2" width="7.5" height="7.5"><title>cycle 3 · optimize iteration 10 · 0% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="323.7" y="182.8" width="7.5" height="7.5"><title>cycle 3 · optimize iteration 11 · 10% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="344.5" y="182.8" width="7.5" height="7.5"><title>cycle 3 · optimize iteration 12 · 10% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M369.1 210.5 L373.6 215.0 L369.1 219.5 L364.6 215.0 Z"><title>probe 4: 46% on fresh tasks · new sub-goal: label-up prism</title></path>
+<rect class="c-mark-s1" x="386.2" y="130.6" width="7.5" height="7.5"><title>cycle 4 · optimize iteration 13 · 40% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="407.1" y="113.2" width="7.5" height="7.5"><title>cycle 4 · optimize iteration 14 · 50% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="427.9" y="61.0" width="7.5" height="7.5"><title>cycle 4 · optimize iteration 15 · 80% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M452.5 210.5 L457.0 215.0 L452.5 219.5 L448.0 215.0 Z"><title>probe 5: 39% on fresh tasks · new sub-goal: lying bottle</title></path>
+<rect class="c-mark-s1" x="469.6" y="95.9" width="7.5" height="7.5"><title>cycle 5 · optimize iteration 16 · 60% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="490.4" y="78.5" width="7.5" height="7.5"><title>cycle 5 · optimize iteration 17 · 70% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="511.3" y="43.7" width="7.5" height="7.5"><title>cycle 5 · optimize iteration 18 · 90% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M535.9 210.5 L540.4 215.0 L535.9 219.5 L531.4 215.0 Z"><title>probe 6: 56% on fresh tasks · new sub-goal: 2-object clutter</title></path>
+<rect class="c-mark-s1" x="553.0" y="61.0" width="7.5" height="7.5"><title>cycle 6 · optimize iteration 19 · 80% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="573.8" y="61.0" width="7.5" height="7.5"><title>cycle 6 · optimize iteration 20 · 80% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M53.0 8.5 L57.5 13.0 L53.0 17.5 L48.5 13.0 Z"/>
+<text class="c-legend" x="64" y="13" dominant-baseline="middle">probe (new sub-goal)</text>
+<rect class="c-mark-s1" x="227.2" y="9.2" width="7.5" height="7.5"/>
+<text class="c-legend" x="242.0" y="13" dominant-baseline="middle">success rate on the sub-goal tasks</text>
+</svg>
+  </div>
+  <div class="curve-panel curve-panel--s2">
+    <p class="curve-title"><span class="curve-stage">Stage 2</span>Adaptation to the stand-in robot</p>
+<svg class="curve curve--s2" viewBox="0 0 330 250" role="img" aria-label="Stage 2: success of the deployment rollout at each of five adaptation trials, SimEX against Without Simulation, 35 runs">
+<line class="c-grid" x1="46" y1="204.0" x2="318" y2="204.0"/>
+<text class="c-tick" x="40" y="204.0" text-anchor="end" dominant-baseline="middle">0</text>
+<line class="c-grid" x1="46" y1="117.0" x2="318" y2="117.0"/>
+<text class="c-tick" x="40" y="117.0" text-anchor="end" dominant-baseline="middle">50</text>
+<line class="c-grid" x1="46" y1="30.0" x2="318" y2="30.0"/>
+<text class="c-tick" x="40" y="30.0" text-anchor="end" dominant-baseline="middle">100%</text>
+<text class="c-axis" transform="translate(12 117.0) rotate(-90)" text-anchor="middle" dominant-baseline="middle">success rate</text>
+<text class="c-axis" x="182.0" y="242" text-anchor="middle">adaptation trial</text>
+<text class="c-tick" x="73.2" y="215" text-anchor="middle" dominant-baseline="middle">1</text>
+<text class="c-tick" x="127.6" y="215" text-anchor="middle" dominant-baseline="middle">2</text>
+<text class="c-tick" x="182.0" y="215" text-anchor="middle" dominant-baseline="middle">3</text>
+<text class="c-tick" x="236.4" y="215" text-anchor="middle" dominant-baseline="middle">4</text>
+<text class="c-tick" x="290.8" y="215" text-anchor="middle" dominant-baseline="middle">5</text>
+<polyline class="c-line-nosim" points="73.2,198.8 127.6,204.0 182.0,204.0 236.4,204.0 290.8,204.0"/>
+<polyline class="c-line-simex" points="73.2,204.0 127.6,104.8 182.0,94.4 236.4,75.2 290.8,59.6"/>
+<circle class="c-mark-nosim" cx="73.2" cy="198.8" r="4"><title>Without Simulation · trial 1 · 3% of 35 runs succeed</title></circle>
+<circle class="c-mark-nosim" cx="127.6" cy="204.0" r="4"><title>Without Simulation · trial 2 · 0% of 35 runs succeed</title></circle>
+<circle class="c-mark-nosim" cx="182.0" cy="204.0" r="4"><title>Without Simulation · trial 3 · 0% of 35 runs succeed</title></circle>
+<circle class="c-mark-nosim" cx="236.4" cy="204.0" r="4"><title>Without Simulation · trial 4 · 0% of 35 runs succeed</title></circle>
+<circle class="c-mark-nosim" cx="290.8" cy="204.0" r="4"><title>Without Simulation · trial 5 · 0% of 35 runs succeed</title></circle>
+<rect class="c-mark-simex" x="69.5" y="200.2" width="7.5" height="7.5"><title>SimEX · trial 1 · 0% of 35 runs succeed</title></rect>
+<rect class="c-mark-simex" x="123.8" y="101.1" width="7.5" height="7.5"><title>SimEX · trial 2 · 57% of 35 runs succeed</title></rect>
+<rect class="c-mark-simex" x="178.2" y="90.6" width="7.5" height="7.5"><title>SimEX · trial 3 · 63% of 35 runs succeed</title></rect>
+<rect class="c-mark-simex" x="232.7" y="71.5" width="7.5" height="7.5"><title>SimEX · trial 4 · 74% of 35 runs succeed</title></rect>
+<rect class="c-mark-simex" x="287.0" y="55.8" width="7.5" height="7.5"><title>SimEX · trial 5 · 83% of 35 runs succeed</title></rect>
+<rect class="c-mark-simex" x="49.2" y="9.2" width="7.5" height="7.5"/>
+<text class="c-legend" x="64" y="13" dominant-baseline="middle">SimEX</text>
+<circle class="c-mark-nosim" cx="127.5" cy="13.0" r="4"/>
+<text class="c-legend" x="138.5" y="13" dominant-baseline="middle">Without Simulation</text>
+</svg>
+  </div>
+</figure>
+</template>
+<template id="sim-curves-plate">
+<figure class="curve-pair">
+  <div class="curve-panel curve-panel--s1">
+    <p class="curve-title"><span class="curve-stage">Stage 1</span>Open-ended autoresearch in simulation</p>
+<svg class="curve curve--s1" viewBox="0 0 600 250" role="img" aria-label="Stage 1: sub-goal success rate over the optimize iterations of one island of the plate autoresearch run">
+<rect class="c-band" x="81.0" y="30" width="52.5" height="174"/>
+<rect class="c-band" x="203.4" y="30" width="52.5" height="174"/>
+<rect class="c-band" x="308.3" y="30" width="52.5" height="174"/>
+<rect class="c-band" x="413.2" y="30" width="35.0" height="174"/>
+<rect class="c-band" x="483.1" y="30" width="35.0" height="174"/>
+<rect class="c-band" x="553.0" y="30" width="35.0" height="174"/>
+<line class="c-grid" x1="46" y1="204.0" x2="588" y2="204.0"/>
+<text class="c-tick" x="40" y="204.0" text-anchor="end" dominant-baseline="middle">0</text>
+<line class="c-grid" x1="46" y1="117.0" x2="588" y2="117.0"/>
+<text class="c-tick" x="40" y="117.0" text-anchor="end" dominant-baseline="middle">50</text>
+<line class="c-grid" x1="46" y1="30.0" x2="588" y2="30.0"/>
+<text class="c-tick" x="40" y="30.0" text-anchor="end" dominant-baseline="middle">100%</text>
+<text class="c-axis" transform="translate(12 117.0) rotate(-90)" text-anchor="middle" dominant-baseline="middle">success rate</text>
+<text class="c-axis" x="317.0" y="242" text-anchor="middle">optimize iteration</text>
+<polyline class="c-line-s1" points="107.2,134.4 124.7,30.0"/>
+<polyline class="c-line-s1" points="159.6,99.6 177.1,47.4 194.6,30.0"/>
+<polyline class="c-line-s1" points="229.6,134.4 247.1,47.4"/>
+<polyline class="c-line-s1" points="282.0,117.0 299.5,64.8"/>
+<polyline class="c-line-s1" points="334.5,151.8 352.0,99.6"/>
+<polyline class="c-line-s1" points="386.9,82.2 404.4,82.2"/>
+<text class="c-tick" x="107.2" y="215" text-anchor="middle" dominant-baseline="middle">2</text>
+<text class="c-tick" x="159.6" y="215" text-anchor="middle" dominant-baseline="middle">4</text>
+<text class="c-tick" x="194.6" y="215" text-anchor="middle" dominant-baseline="middle">6</text>
+<text class="c-tick" x="247.1" y="215" text-anchor="middle" dominant-baseline="middle">8</text>
+<text class="c-tick" x="299.5" y="215" text-anchor="middle" dominant-baseline="middle">10</text>
+<text class="c-tick" x="352.0" y="215" text-anchor="middle" dominant-baseline="middle">12</text>
+<text class="c-tick" x="404.4" y="215" text-anchor="middle" dominant-baseline="middle">14</text>
+<text class="c-tick" x="474.4" y="215" text-anchor="middle" dominant-baseline="middle">16</text>
+<text class="c-tick" x="544.3" y="215" text-anchor="middle" dominant-baseline="middle">18</text>
+<path class="c-probe" d="M54.7 210.5 L59.2 215.0 L54.7 219.5 L50.2 215.0 Z"><title>probe 1: 3% on fresh tasks · new sub-goal: Deliver ONE named plate from any grid slot…</title></path>
+<rect class="c-mark-s1" x="68.5" y="26.2" width="7.5" height="7.5"><title>cycle 1 · optimize iteration 1 · 100% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M89.7 210.5 L94.2 215.0 L89.7 219.5 L85.2 215.0 Z"><title>probe 2: 79% on fresh tasks · new sub-goal: Rim-safe, swing-free carry and stow from…</title></path>
+<rect class="c-mark-s1" x="103.4" y="130.6" width="7.5" height="7.5"><title>cycle 2 · optimize iteration 2 · 40% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="120.9" y="26.2" width="7.5" height="7.5"><title>cycle 2 · optimize iteration 3 · 100% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M142.2 210.5 L146.7 215.0 L142.2 219.5 L137.7 215.0 Z"><title>probe 3: 79% on fresh tasks · new sub-goal: Hold the plate through lift and carry from…</title></path>
+<rect class="c-mark-s1" x="155.9" y="95.9" width="7.5" height="7.5"><title>cycle 3 · optimize iteration 4 · 60% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="173.4" y="43.7" width="7.5" height="7.5"><title>cycle 3 · optimize iteration 5 · 90% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="190.9" y="26.2" width="7.5" height="7.5"><title>cycle 3 · optimize iteration 6 · 100% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M212.1 210.5 L216.6 215.0 L212.1 219.5 L207.6 215.0 Z"><title>probe 4: 87% on fresh tasks · new sub-goal: Deliver back-row plates at the OUTER columns</title></path>
+<rect class="c-mark-s1" x="225.8" y="130.6" width="7.5" height="7.5"><title>cycle 4 · optimize iteration 7 · 40% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="243.3" y="43.7" width="7.5" height="7.5"><title>cycle 4 · optimize iteration 8 · 90% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M264.5 210.5 L269.0 215.0 L264.5 219.5 L260.0 215.0 Z"><title>probe 5: 74% on fresh tasks · new sub-goal: Complete multi-plate sequences whose…</title></path>
+<rect class="c-mark-s1" x="278.3" y="113.2" width="7.5" height="7.5"><title>cycle 5 · optimize iteration 9 · 50% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="295.8" y="61.0" width="7.5" height="7.5"><title>cycle 5 · optimize iteration 10 · 80% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M317.0 210.5 L321.5 215.0 L317.0 219.5 L312.5 215.0 Z"><title>probe 6: 88% on fresh tasks · new sub-goal: Land HEAVY plates</title></path>
+<rect class="c-mark-s1" x="330.7" y="148.1" width="7.5" height="7.5"><title>cycle 6 · optimize iteration 11 · 30% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="348.2" y="95.9" width="7.5" height="7.5"><title>cycle 6 · optimize iteration 12 · 60% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M369.5 210.5 L374.0 215.0 L369.5 219.5 L365.0 215.0 Z"><title>probe 7: 92% on fresh tasks · new sub-goal: Deliver plates ACROSS to a tote shifted…</title></path>
+<rect class="c-mark-s1" x="383.2" y="78.5" width="7.5" height="7.5"><title>cycle 7 · optimize iteration 13 · 70% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="400.7" y="78.5" width="7.5" height="7.5"><title>cycle 7 · optimize iteration 14 · 70% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M421.9 210.5 L426.4 215.0 L421.9 219.5 L417.4 215.0 Z"><title>probe 8: 96% on fresh tasks · new sub-goal: Deliver plates beside a YAWED tote</title></path>
+<rect class="c-mark-s1" x="435.6" y="43.7" width="7.5" height="7.5"><title>cycle 8 · optimize iteration 15 · 90% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M456.9 210.5 L461.4 215.0 L456.9 219.5 L452.4 215.0 Z"><title>probe 9: 89% on fresh tasks · new sub-goal: Deliver sequences into a tote that is both…</title></path>
+<rect class="c-mark-s1" x="470.6" y="43.7" width="7.5" height="7.5"><title>cycle 9 · optimize iteration 16 · 90% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M491.8 210.5 L496.3 215.0 L491.8 219.5 L487.3 215.0 Z"><title>probe 10: 89% on fresh tasks · new sub-goal: Every freshly generated CaP script runs to…</title></path>
+<rect class="c-mark-s1" x="505.6" y="26.2" width="7.5" height="7.5"><title>cycle 10 · optimize iteration 17 · 100% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M526.8 210.5 L531.3 215.0 L526.8 219.5 L522.3 215.0 Z"><title>probe 11: 100% on fresh tasks · new sub-goal: Finish every all-four within 2050 env steps</title></path>
+<rect class="c-mark-s1" x="540.5" y="43.7" width="7.5" height="7.5"><title>cycle 11 · optimize iteration 18 · 90% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M561.8 210.5 L566.3 215.0 L561.8 219.5 L557.3 215.0 Z"><title>probe 12: 93% on fresh tasks · new sub-goal: Land 25-30 g plates that survive the carry…</title></path>
+<rect class="c-mark-s1" x="575.5" y="43.7" width="7.5" height="7.5"><title>cycle 12 · optimize iteration 19 · 90% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M53.0 8.5 L57.5 13.0 L53.0 17.5 L48.5 13.0 Z"/>
+<text class="c-legend" x="64" y="13" dominant-baseline="middle">probe (new sub-goal)</text>
+<rect class="c-mark-s1" x="227.2" y="9.2" width="7.5" height="7.5"/>
+<text class="c-legend" x="242.0" y="13" dominant-baseline="middle">success rate on the sub-goal tasks</text>
+</svg>
+  </div>
+  <div class="curve-panel curve-panel--s2">
+    <p class="curve-title"><span class="curve-stage">Stage 2</span>Adaptation to the stand-in robot</p>
+<svg class="curve curve--s2" viewBox="0 0 330 250" role="img" aria-label="Stage 2: success of the deployment rollout at each of five adaptation trials, SimEX against Without Simulation, 35 runs">
+<line class="c-grid" x1="46" y1="204.0" x2="318" y2="204.0"/>
+<text class="c-tick" x="40" y="204.0" text-anchor="end" dominant-baseline="middle">0</text>
+<line class="c-grid" x1="46" y1="117.0" x2="318" y2="117.0"/>
+<text class="c-tick" x="40" y="117.0" text-anchor="end" dominant-baseline="middle">50</text>
+<line class="c-grid" x1="46" y1="30.0" x2="318" y2="30.0"/>
+<text class="c-tick" x="40" y="30.0" text-anchor="end" dominant-baseline="middle">100%</text>
+<text class="c-axis" transform="translate(12 117.0) rotate(-90)" text-anchor="middle" dominant-baseline="middle">success rate</text>
+<text class="c-axis" x="182.0" y="242" text-anchor="middle">adaptation trial</text>
+<text class="c-tick" x="73.2" y="215" text-anchor="middle" dominant-baseline="middle">1</text>
+<text class="c-tick" x="127.6" y="215" text-anchor="middle" dominant-baseline="middle">2</text>
+<text class="c-tick" x="182.0" y="215" text-anchor="middle" dominant-baseline="middle">3</text>
+<text class="c-tick" x="236.4" y="215" text-anchor="middle" dominant-baseline="middle">4</text>
+<text class="c-tick" x="290.8" y="215" text-anchor="middle" dominant-baseline="middle">5</text>
+<polyline class="c-line-nosim" points="73.2,179.6 127.6,174.4 182.0,158.8 236.4,153.5 290.8,139.6"/>
+<polyline class="c-line-simex" points="73.2,179.6 127.6,83.9 182.0,64.8 236.4,40.4 290.8,35.2"/>
+<circle class="c-mark-nosim" cx="73.2" cy="179.6" r="4"><title>Without Simulation · trial 1 · 14% of 35 runs succeed</title></circle>
+<circle class="c-mark-nosim" cx="127.6" cy="174.4" r="4"><title>Without Simulation · trial 2 · 17% of 35 runs succeed</title></circle>
+<circle class="c-mark-nosim" cx="182.0" cy="158.8" r="4"><title>Without Simulation · trial 3 · 26% of 35 runs succeed</title></circle>
+<circle class="c-mark-nosim" cx="236.4" cy="153.5" r="4"><title>Without Simulation · trial 4 · 29% of 35 runs succeed</title></circle>
+<circle class="c-mark-nosim" cx="290.8" cy="139.6" r="4"><title>Without Simulation · trial 5 · 37% of 35 runs succeed</title></circle>
+<rect class="c-mark-simex" x="69.5" y="175.9" width="7.5" height="7.5"><title>SimEX · trial 1 · 14% of 35 runs succeed</title></rect>
+<rect class="c-mark-simex" x="123.8" y="80.2" width="7.5" height="7.5"><title>SimEX · trial 2 · 69% of 35 runs succeed</title></rect>
+<rect class="c-mark-simex" x="178.2" y="61.0" width="7.5" height="7.5"><title>SimEX · trial 3 · 80% of 35 runs succeed</title></rect>
+<rect class="c-mark-simex" x="232.7" y="36.7" width="7.5" height="7.5"><title>SimEX · trial 4 · 94% of 35 runs succeed</title></rect>
+<rect class="c-mark-simex" x="287.0" y="31.5" width="7.5" height="7.5"><title>SimEX · trial 5 · 97% of 35 runs succeed</title></rect>
+<rect class="c-mark-simex" x="49.2" y="9.2" width="7.5" height="7.5"/>
+<text class="c-legend" x="64" y="13" dominant-baseline="middle">SimEX</text>
+<circle class="c-mark-nosim" cx="127.5" cy="13.0" r="4"/>
+<text class="c-legend" x="138.5" y="13" dominant-baseline="middle">Without Simulation</text>
+</svg>
+  </div>
+</figure>
+</template>
+<template id="sim-curves-towel">
+<figure class="curve-pair">
+  <div class="curve-panel curve-panel--s1">
+    <p class="curve-title"><span class="curve-stage">Stage 1</span>Open-ended autoresearch in simulation</p>
+<svg class="curve curve--s1" viewBox="0 0 600 250" role="img" aria-label="Stage 1: sub-goal success rate over the optimize iterations of one island of an early towel autoresearch run">
+<rect class="c-band" x="158.9" y="30" width="90.3" height="174"/>
+<rect class="c-band" x="429.9" y="30" width="158.1" height="174"/>
+<line class="c-grid" x1="46" y1="204.0" x2="588" y2="204.0"/>
+<text class="c-tick" x="40" y="204.0" text-anchor="end" dominant-baseline="middle">0</text>
+<line class="c-grid" x1="46" y1="117.0" x2="588" y2="117.0"/>
+<text class="c-tick" x="40" y="117.0" text-anchor="end" dominant-baseline="middle">50</text>
+<line class="c-grid" x1="46" y1="30.0" x2="588" y2="30.0"/>
+<text class="c-tick" x="40" y="30.0" text-anchor="end" dominant-baseline="middle">100%</text>
+<text class="c-axis" transform="translate(12 117.0) rotate(-90)" text-anchor="middle" dominant-baseline="middle">success rate</text>
+<text class="c-axis" x="317.0" y="242" text-anchor="middle">optimize iteration</text>
+<polyline class="c-line-s1" points="79.9,117.0 102.5,82.2 125.0,117.0 147.6,64.8"/>
+<polyline class="c-line-s1" points="192.8,204.0 215.4,204.0 238.0,204.0"/>
+<polyline class="c-line-s1" points="283.1,204.0 305.7,186.6 328.3,151.8 350.9,169.2 373.5,117.0 396.0,134.4 418.6,169.2"/>
+<polyline class="c-line-s1" points="463.8,169.2 486.4,169.2 509.0,134.4 531.5,134.4 554.1,30.0 576.7,99.6"/>
+<text class="c-tick" x="79.9" y="215" text-anchor="middle" dominant-baseline="middle">1</text>
+<text class="c-tick" x="102.5" y="215" text-anchor="middle" dominant-baseline="middle">2</text>
+<text class="c-tick" x="125.0" y="215" text-anchor="middle" dominant-baseline="middle">3</text>
+<text class="c-tick" x="147.6" y="215" text-anchor="middle" dominant-baseline="middle">4</text>
+<text class="c-tick" x="192.8" y="215" text-anchor="middle" dominant-baseline="middle">5</text>
+<text class="c-tick" x="215.4" y="215" text-anchor="middle" dominant-baseline="middle">6</text>
+<text class="c-tick" x="238.0" y="215" text-anchor="middle" dominant-baseline="middle">7</text>
+<text class="c-tick" x="283.1" y="215" text-anchor="middle" dominant-baseline="middle">8</text>
+<text class="c-tick" x="305.7" y="215" text-anchor="middle" dominant-baseline="middle">9</text>
+<text class="c-tick" x="328.3" y="215" text-anchor="middle" dominant-baseline="middle">10</text>
+<text class="c-tick" x="350.9" y="215" text-anchor="middle" dominant-baseline="middle">11</text>
+<text class="c-tick" x="373.5" y="215" text-anchor="middle" dominant-baseline="middle">12</text>
+<text class="c-tick" x="396.0" y="215" text-anchor="middle" dominant-baseline="middle">13</text>
+<text class="c-tick" x="418.6" y="215" text-anchor="middle" dominant-baseline="middle">14</text>
+<text class="c-tick" x="463.8" y="215" text-anchor="middle" dominant-baseline="middle">15</text>
+<text class="c-tick" x="486.4" y="215" text-anchor="middle" dominant-baseline="middle">16</text>
+<text class="c-tick" x="509.0" y="215" text-anchor="middle" dominant-baseline="middle">17</text>
+<text class="c-tick" x="531.5" y="215" text-anchor="middle" dominant-baseline="middle">18</text>
+<text class="c-tick" x="554.1" y="215" text-anchor="middle" dominant-baseline="middle">19</text>
+<text class="c-tick" x="576.7" y="215" text-anchor="middle" dominant-baseline="middle">20</text>
+<path class="c-probe" d="M57.3 210.5 L61.8 215.0 L57.3 219.5 L52.8 215.0 Z"><title>probe 1: 0% on fresh tasks · new sub-goal: pinch a towel edge and lift a handful of…</title></path>
+<rect class="c-mark-s1" x="76.1" y="113.2" width="7.5" height="7.5"><title>cycle 1 · optimize iteration 1 · 50% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="98.7" y="78.5" width="7.5" height="7.5"><title>cycle 1 · optimize iteration 2 · 70% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="121.3" y="113.2" width="7.5" height="7.5"><title>cycle 1 · optimize iteration 3 · 50% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="143.9" y="61.0" width="7.5" height="7.5"><title>cycle 1 · optimize iteration 4 · 80% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M170.2 210.5 L174.7 215.0 L170.2 219.5 L165.7 215.0 Z"><title>probe 2: 15% on fresh tasks · new sub-goal: fold the towel in half by carrying its…</title></path>
+<rect class="c-mark-s1" x="189.0" y="200.2" width="7.5" height="7.5"><title>cycle 2 · optimize iteration 5 · 0% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="211.6" y="200.2" width="7.5" height="7.5"><title>cycle 2 · optimize iteration 6 · 0% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="234.2" y="200.2" width="7.5" height="7.5"><title>cycle 2 · optimize iteration 7 · 0% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M260.5 210.5 L265.0 215.0 L260.5 219.5 L256.0 215.0 Z"><title>probe 3: 4% on fresh tasks · new sub-goal: fold the towel in half and leave it lying…</title></path>
+<rect class="c-mark-s1" x="279.4" y="200.2" width="7.5" height="7.5"><title>cycle 3 · optimize iteration 8 · 0% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="302.0" y="182.8" width="7.5" height="7.5"><title>cycle 3 · optimize iteration 9 · 10% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="324.5" y="148.1" width="7.5" height="7.5"><title>cycle 3 · optimize iteration 10 · 30% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="347.1" y="165.4" width="7.5" height="7.5"><title>cycle 3 · optimize iteration 11 · 20% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="369.7" y="113.2" width="7.5" height="7.5"><title>cycle 3 · optimize iteration 12 · 50% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="392.3" y="130.6" width="7.5" height="7.5"><title>cycle 3 · optimize iteration 13 · 40% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="414.9" y="165.4" width="7.5" height="7.5"><title>cycle 3 · optimize iteration 14 · 20% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M441.2 210.5 L445.7 215.0 L441.2 219.5 L436.7 215.0 Z"><title>probe 4: 14% on fresh tasks · new sub-goal: fold the towel in half and leave it flat,…</title></path>
+<rect class="c-mark-s1" x="460.0" y="165.4" width="7.5" height="7.5"><title>cycle 4 · optimize iteration 15 · 20% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="482.6" y="165.4" width="7.5" height="7.5"><title>cycle 4 · optimize iteration 16 · 20% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="505.2" y="130.6" width="7.5" height="7.5"><title>cycle 4 · optimize iteration 17 · 40% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="527.8" y="130.6" width="7.5" height="7.5"><title>cycle 4 · optimize iteration 18 · 40% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="550.4" y="26.2" width="7.5" height="7.5"><title>cycle 4 · optimize iteration 19 · 100% on the sub-goal tasks</title></rect>
+<rect class="c-mark-s1" x="573.0" y="95.9" width="7.5" height="7.5"><title>cycle 4 · optimize iteration 20 · 60% on the sub-goal tasks</title></rect>
+<path class="c-probe" d="M53.0 8.5 L57.5 13.0 L53.0 17.5 L48.5 13.0 Z"/>
+<text class="c-legend" x="64" y="13" dominant-baseline="middle">probe (new sub-goal)</text>
+<rect class="c-mark-s1" x="227.2" y="9.2" width="7.5" height="7.5"/>
+<text class="c-legend" x="242.0" y="13" dominant-baseline="middle">success rate on the sub-goal tasks</text>
+</svg>
+  </div>
+  <div class="curve-panel curve-panel--s2">
+    <p class="curve-title"><span class="curve-stage">Stage 2</span>Adaptation to the stand-in robot</p>
+<svg class="curve curve--s2" viewBox="0 0 330 250" role="img" aria-label="Stage 2: success of the deployment rollout at each of five adaptation trials, SimEX against Without Simulation, 35 runs">
+<line class="c-grid" x1="46" y1="204.0" x2="318" y2="204.0"/>
+<text class="c-tick" x="40" y="204.0" text-anchor="end" dominant-baseline="middle">0</text>
+<line class="c-grid" x1="46" y1="117.0" x2="318" y2="117.0"/>
+<text class="c-tick" x="40" y="117.0" text-anchor="end" dominant-baseline="middle">50</text>
+<line class="c-grid" x1="46" y1="30.0" x2="318" y2="30.0"/>
+<text class="c-tick" x="40" y="30.0" text-anchor="end" dominant-baseline="middle">100%</text>
+<text class="c-axis" transform="translate(12 117.0) rotate(-90)" text-anchor="middle" dominant-baseline="middle">success rate</text>
+<text class="c-axis" x="182.0" y="242" text-anchor="middle">adaptation trial</text>
+<text class="c-tick" x="73.2" y="215" text-anchor="middle" dominant-baseline="middle">1</text>
+<text class="c-tick" x="127.6" y="215" text-anchor="middle" dominant-baseline="middle">2</text>
+<text class="c-tick" x="182.0" y="215" text-anchor="middle" dominant-baseline="middle">3</text>
+<text class="c-tick" x="236.4" y="215" text-anchor="middle" dominant-baseline="middle">4</text>
+<text class="c-tick" x="290.8" y="215" text-anchor="middle" dominant-baseline="middle">5</text>
+<polyline class="c-line-nosim" points="73.2,174.4 127.6,179.6 182.0,169.2 236.4,169.2 290.8,153.5"/>
+<polyline class="c-line-simex" points="73.2,169.2 127.6,134.4 182.0,129.2 236.4,118.7 290.8,110.0"/>
+<circle class="c-mark-nosim" cx="73.2" cy="174.4" r="4"><title>Without Simulation · trial 1 · 17% of 35 runs succeed</title></circle>
+<circle class="c-mark-nosim" cx="127.6" cy="179.6" r="4"><title>Without Simulation · trial 2 · 14% of 35 runs succeed</title></circle>
+<circle class="c-mark-nosim" cx="182.0" cy="169.2" r="4"><title>Without Simulation · trial 3 · 20% of 35 runs succeed</title></circle>
+<circle class="c-mark-nosim" cx="236.4" cy="169.2" r="4"><title>Without Simulation · trial 4 · 20% of 35 runs succeed</title></circle>
+<circle class="c-mark-nosim" cx="290.8" cy="153.5" r="4"><title>Without Simulation · trial 5 · 29% of 35 runs succeed</title></circle>
+<rect class="c-mark-simex" x="69.5" y="165.4" width="7.5" height="7.5"><title>SimEX · trial 1 · 20% of 35 runs succeed</title></rect>
+<rect class="c-mark-simex" x="123.8" y="130.6" width="7.5" height="7.5"><title>SimEX · trial 2 · 40% of 35 runs succeed</title></rect>
+<rect class="c-mark-simex" x="178.2" y="125.4" width="7.5" height="7.5"><title>SimEX · trial 3 · 43% of 35 runs succeed</title></rect>
+<rect class="c-mark-simex" x="232.7" y="115.0" width="7.5" height="7.5"><title>SimEX · trial 4 · 49% of 35 runs succeed</title></rect>
+<rect class="c-mark-simex" x="287.0" y="106.3" width="7.5" height="7.5"><title>SimEX · trial 5 · 54% of 35 runs succeed</title></rect>
+<rect class="c-mark-simex" x="49.2" y="9.2" width="7.5" height="7.5"/>
+<text class="c-legend" x="64" y="13" dominant-baseline="middle">SimEX</text>
+<circle class="c-mark-nosim" cx="127.5" cy="13.0" r="4"/>
+<text class="c-legend" x="138.5" y="13" dominant-baseline="middle">Without Simulation</text>
+</svg>
+  </div>
+</figure>
+</template>
+<!-- SIM-CURVES:END -->
     <div id="sim-video-grids"></div>
   </div>
 </section>
@@ -905,6 +1241,10 @@ const root = document.getElementById("sim-video-grids");
 for (const [key, fam] of Object.entries(SIM_TASKS)) {
   const h = document.createElement("h3"); h.textContent = fam.family; root.appendChild(h);
   if (fam.note) { const p = document.createElement("p"); p.className = "body-text section-intro"; p.textContent = fam.note; root.appendChild(p); }
+  const curves = document.getElementById(`sim-curves-${key}`);
+  const subhead = (text) => { const p = document.createElement("p"); p.className = "sim-subhead"; p.textContent = text; root.appendChild(p); };
+  if (curves) { subhead("Autoresearch curves"); root.appendChild(curves.content.cloneNode(true)); }
+  subhead("Rollouts on held-out tasks");
   for (const [id, name] of fam.tasks) {
     const row = document.createElement("div"); row.className = "sim-task-row";
     const label = document.createElement("p"); label.className = "sim-task-label"; label.textContent = name; row.appendChild(label);

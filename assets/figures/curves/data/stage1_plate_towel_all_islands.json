@@ -1,0 +1,1301 @@
+{
+ "0913-plate-fmax/island_00": {
+  "run": "/local/home/jiahengh/lab42/src/FAR-mjlab/reports/2026-09/09-13/runs/09-13_0910_vbarcodepop_0913-plate-fmax",
+  "sg_n": {
+   "1": 10,
+   "3": 10,
+   "5": 10,
+   "7": 10,
+   "9": 10,
+   "10": 10,
+   "12": 10,
+   "13": 10,
+   "14": 10,
+   "15": 10,
+   "17": 10,
+   "19": 10,
+   "21": 10,
+   "23": 10,
+   "25": 10,
+   "27": 10,
+   "29": 10,
+   "31": 10,
+   "33": 10,
+   "35": 10,
+   "37": 10,
+   "40": 10,
+   "44": 10,
+   "53": 175
+  },
+  "cycles": [
+   {
+    "cycle": 1,
+    "probe_iter": 0,
+    "probe_success": 0.07142857142857142,
+    "label": "Deliver ONE named plate into the tote\u2026",
+    "optimize_iters": [
+     1
+    ],
+    "subgoal_success": [
+     0.8
+    ]
+   },
+   {
+    "cycle": 2,
+    "probe_iter": 2,
+    "probe_success": 0.39285714285714285,
+    "label": "Hold the plate through the carry and\u2026",
+    "optimize_iters": [
+     3
+    ],
+    "subgoal_success": [
+     1.0
+    ]
+   },
+   {
+    "cycle": 3,
+    "probe_iter": 4,
+    "probe_success": 0.8214285714285714,
+    "label": "Complete multi-plate cleanups",
+    "optimize_iters": [
+     5
+    ],
+    "subgoal_success": [
+     0.8
+    ]
+   },
+   {
+    "cycle": 4,
+    "probe_iter": 6,
+    "probe_success": 0.6785714285714286,
+    "label": "Grasp and deliver plates at the workspace\u2026",
+    "optimize_iters": [
+     7
+    ],
+    "subgoal_success": [
+     0.9
+    ]
+   },
+   {
+    "cycle": 5,
+    "probe_iter": 8,
+    "probe_success": 0.75,
+    "label": "Hold 3x-mass",
+    "optimize_iters": [
+     9,
+     10
+    ],
+    "subgoal_success": [
+     0.7,
+     0.6
+    ]
+   },
+   {
+    "cycle": 6,
+    "probe_iter": 11,
+    "probe_success": 0.8928571428571429,
+    "label": "Deliver plates that start close to the\u2026",
+    "optimize_iters": [
+     12,
+     13,
+     14,
+     15
+    ],
+    "subgoal_success": [
+     0.3,
+     0.6,
+     0.7,
+     0.8
+    ]
+   },
+   {
+    "cycle": 7,
+    "probe_iter": 16,
+    "probe_success": 0.7142857142857143,
+    "label": "Reliably deliver plates into a\u2026",
+    "optimize_iters": [
+     17
+    ],
+    "subgoal_success": [
+     0.9
+    ]
+   },
+   {
+    "cycle": 8,
+    "probe_iter": 18,
+    "probe_success": 0.7142857142857143,
+    "label": "Reliably deliver ALL FOUR plates into an\u2026",
+    "optimize_iters": [
+     19
+    ],
+    "subgoal_success": [
+     1.0
+    ]
+   },
+   {
+    "cycle": 9,
+    "probe_iter": 20,
+    "probe_success": 0.8214285714285714,
+    "label": "Reliably deliver ALL FOUR heavier plates",
+    "optimize_iters": [
+     21
+    ],
+    "subgoal_success": [
+     1.0
+    ]
+   },
+   {
+    "cycle": 10,
+    "probe_iter": 22,
+    "probe_success": 0.8571428571428571,
+    "label": "Deliver heavy plates",
+    "optimize_iters": [
+     23
+    ],
+    "subgoal_success": [
+     0.9
+    ]
+   },
+   {
+    "cycle": 11,
+    "probe_iter": 24,
+    "probe_success": 0.8928571428571429,
+    "label": "Complete a four-plate cleanup within the\u2026",
+    "optimize_iters": [
+     25
+    ],
+    "subgoal_success": [
+     0.8
+    ]
+   },
+   {
+    "cycle": 12,
+    "probe_iter": 26,
+    "probe_success": 0.9285714285714286,
+    "label": "Bound the deep-back carry-slip RECOVERY in\u2026",
+    "optimize_iters": [
+     27
+    ],
+    "subgoal_success": [
+     0.8
+    ]
+   },
+   {
+    "cycle": 13,
+    "probe_iter": 28,
+    "probe_success": 0.9642857142857143,
+    "label": "cycle 35 OPTIMIZE sub-goal-20",
+    "optimize_iters": [
+     53
+    ],
+    "subgoal_success": [
+     null
+    ]
+   }
+  ]
+ },
+ "0913-plate-fmax/island_01": {
+  "run": "/local/home/jiahengh/lab42/src/FAR-mjlab/reports/2026-09/09-13/runs/09-13_0910_vbarcodepop_0913-plate-fmax",
+  "sg_n": {
+   "0": 10,
+   "1": 10,
+   "2": 10,
+   "3": 10,
+   "4": 10,
+   "5": 10,
+   "6": 10,
+   "7": 10,
+   "8": 10,
+   "9": 10,
+   "10": 10,
+   "11": 10,
+   "12": 10,
+   "13": 10,
+   "14": 10,
+   "15": 10,
+   "16": 10,
+   "17": 10,
+   "18": 10,
+   "19": 10,
+   "20": 10,
+   "21": 10,
+   "22": 10,
+   "23": 10,
+   "24": 10,
+   "25": 10,
+   "26": 10,
+   "27": 10,
+   "28": 10,
+   "29": 10,
+   "30": 10,
+   "31": 10,
+   "32": 10,
+   "33": 10,
+   "34": 10
+  },
+  "cycles": [
+   {
+    "cycle": 1,
+    "probe_iter": 0,
+    "probe_success": 0.10714285714285714,
+    "label": "Deliver ONE named plate into the tote from\u2026",
+    "optimize_iters": [
+     1
+    ],
+    "subgoal_success": [
+     1.0
+    ]
+   },
+   {
+    "cycle": 2,
+    "probe_iter": 2,
+    "probe_success": 0.9655172413793104,
+    "label": "Hold a plate through grasp, carry and\u2026",
+    "optimize_iters": [
+     3
+    ],
+    "subgoal_success": [
+     0.8
+    ]
+   },
+   {
+    "cycle": 3,
+    "probe_iter": 4,
+    "probe_success": 0.7692307692307693,
+    "label": "Hold a 30 g plate through the carry from\u2026",
+    "optimize_iters": [
+     5
+    ],
+    "subgoal_success": [
+     0.7
+    ]
+   },
+   {
+    "cycle": 4,
+    "probe_iter": 6,
+    "probe_success": 0.9285714285714286,
+    "label": "Deliver plates from the FAR back row",
+    "optimize_iters": [
+     7
+    ],
+    "subgoal_success": [
+     0.8
+    ]
+   },
+   {
+    "cycle": 5,
+    "probe_iter": 8,
+    "probe_success": 0.7142857142857143,
+    "label": "Deliver plates whose pinch is marginal at\u2026",
+    "optimize_iters": [
+     9
+    ],
+    "subgoal_success": [
+     0.9
+    ]
+   },
+   {
+    "cycle": 6,
+    "probe_iter": 10,
+    "probe_success": 0.75,
+    "label": "Deliver right-side plates in the x\u2026",
+    "optimize_iters": [
+     11
+    ],
+    "subgoal_success": [
+     0.9
+    ]
+   },
+   {
+    "cycle": 7,
+    "probe_iter": 12,
+    "probe_success": 1.0,
+    "label": "Hold and deliver 35-40 g plates from every\u2026",
+    "optimize_iters": [
+     13,
+     14
+    ],
+    "subgoal_success": [
+     0.7,
+     1.0
+    ]
+   },
+   {
+    "cycle": 8,
+    "probe_iter": 15,
+    "probe_success": 0.8571428571428571,
+    "label": "Keep marginal",
+    "optimize_iters": [
+     16
+    ],
+    "subgoal_success": [
+     1.0
+    ]
+   },
+   {
+    "cycle": 9,
+    "probe_iter": 17,
+    "probe_success": 0.6785714285714286,
+    "label": "Deliver into a DISPLACED tote",
+    "optimize_iters": [
+     18
+    ],
+    "subgoal_success": [
+     0.8
+    ]
+   },
+   {
+    "cycle": 10,
+    "probe_iter": 19,
+    "probe_success": 0.7857142857142857,
+    "label": "Deliver plates at the table's outer edge",
+    "optimize_iters": [
+     20
+    ],
+    "subgoal_success": [
+     0.9
+    ]
+   },
+   {
+    "cycle": 11,
+    "probe_iter": 21,
+    "probe_success": 0.8214285714285714,
+    "label": "Complete cross-body and near-base\u2026",
+    "optimize_iters": [
+     22
+    ],
+    "subgoal_success": [
+     1.0
+    ]
+   },
+   {
+    "cycle": 12,
+    "probe_iter": 23,
+    "probe_success": 0.75,
+    "label": "Carry only VERIFIED holds of heavy",
+    "optimize_iters": [
+     24,
+     25,
+     26
+    ],
+    "subgoal_success": [
+     0.6,
+     0.5,
+     0.7
+    ]
+   },
+   {
+    "cycle": 13,
+    "probe_iter": 27,
+    "probe_success": 0.8571428571428571,
+    "label": "Finish multi-plate tasks after an\u2026",
+    "optimize_iters": [
+     28,
+     29,
+     30
+    ],
+    "subgoal_success": [
+     0.7,
+     0.9,
+     0.6
+    ]
+   },
+   {
+    "cycle": 14,
+    "probe_iter": 31,
+    "probe_success": 0.8928571428571429,
+    "label": "Plates near the tote stay visible and get\u2026",
+    "optimize_iters": [
+     32
+    ],
+    "subgoal_success": [
+     0.8
+    ]
+   },
+   {
+    "cycle": 15,
+    "probe_iter": 33,
+    "probe_success": 0.8571428571428571,
+    "label": "Deliver plates lying beside the tote at\u2026",
+    "optimize_iters": [
+     34
+    ],
+    "subgoal_success": [
+     0.9
+    ]
+   }
+  ]
+ },
+ "0913-plate-fmax/island_02": {
+  "run": "/local/home/jiahengh/lab42/src/FAR-mjlab/reports/2026-09/09-13/runs/09-13_0910_vbarcodepop_0913-plate-fmax",
+  "sg_n": {
+   "0": 10,
+   "1": 10,
+   "2": 10,
+   "3": 10,
+   "4": 10,
+   "5": 10,
+   "6": 10,
+   "7": 10,
+   "8": 10,
+   "9": 10,
+   "10": 10,
+   "11": 10,
+   "12": 10,
+   "13": 10,
+   "14": 10,
+   "15": 10,
+   "16": 10,
+   "17": 10,
+   "18": 10,
+   "19": 10,
+   "20": 10,
+   "21": 10,
+   "22": 10,
+   "23": 10,
+   "24": 10,
+   "25": 10,
+   "26": 10,
+   "27": 10,
+   "28": 10,
+   "29": 10,
+   "30": 10
+  },
+  "cycles": [
+   {
+    "cycle": 1,
+    "probe_iter": 0,
+    "probe_success": 0.03125,
+    "label": "Deliver ONE named plate from any grid slot\u2026",
+    "optimize_iters": [
+     1
+    ],
+    "subgoal_success": [
+     1.0
+    ]
+   },
+   {
+    "cycle": 2,
+    "probe_iter": 2,
+    "probe_success": 0.7857142857142857,
+    "label": "Rim-safe, swing-free carry and stow from\u2026",
+    "optimize_iters": [
+     3,
+     4
+    ],
+    "subgoal_success": [
+     0.4,
+     1.0
+    ]
+   },
+   {
+    "cycle": 3,
+    "probe_iter": 5,
+    "probe_success": 0.7857142857142857,
+    "label": "Hold the plate through lift and carry from\u2026",
+    "optimize_iters": [
+     6,
+     7,
+     8
+    ],
+    "subgoal_success": [
+     0.6,
+     0.9,
+     1.0
+    ]
+   },
+   {
+    "cycle": 4,
+    "probe_iter": 9,
+    "probe_success": 0.8709677419354839,
+    "label": "Deliver back-row plates at the OUTER columns",
+    "optimize_iters": [
+     10,
+     11
+    ],
+    "subgoal_success": [
+     0.4,
+     0.9
+    ]
+   },
+   {
+    "cycle": 5,
+    "probe_iter": 12,
+    "probe_success": 0.7407407407407407,
+    "label": "Complete multi-plate sequences whose\u2026",
+    "optimize_iters": [
+     13,
+     14
+    ],
+    "subgoal_success": [
+     0.5,
+     0.8
+    ]
+   },
+   {
+    "cycle": 6,
+    "probe_iter": 15,
+    "probe_success": 0.8846153846153846,
+    "label": "Land HEAVY plates",
+    "optimize_iters": [
+     16,
+     17
+    ],
+    "subgoal_success": [
+     0.3,
+     0.6
+    ]
+   },
+   {
+    "cycle": 7,
+    "probe_iter": 18,
+    "probe_success": 0.9230769230769231,
+    "label": "Deliver plates ACROSS to a tote shifted\u2026",
+    "optimize_iters": [
+     19,
+     20
+    ],
+    "subgoal_success": [
+     0.7,
+     0.7
+    ]
+   },
+   {
+    "cycle": 8,
+    "probe_iter": 21,
+    "probe_success": 0.9642857142857143,
+    "label": "Deliver plates beside a YAWED tote",
+    "optimize_iters": [
+     22
+    ],
+    "subgoal_success": [
+     0.9
+    ]
+   },
+   {
+    "cycle": 9,
+    "probe_iter": 23,
+    "probe_success": 0.8928571428571429,
+    "label": "Deliver sequences into a tote that is both\u2026",
+    "optimize_iters": [
+     24
+    ],
+    "subgoal_success": [
+     0.9
+    ]
+   },
+   {
+    "cycle": 10,
+    "probe_iter": 25,
+    "probe_success": 0.8928571428571429,
+    "label": "Every freshly generated CAP script runs to\u2026",
+    "optimize_iters": [
+     26
+    ],
+    "subgoal_success": [
+     1.0
+    ]
+   },
+   {
+    "cycle": 11,
+    "probe_iter": 27,
+    "probe_success": 1.0,
+    "label": "Finish every all-four within 2050 env steps",
+    "optimize_iters": [
+     28
+    ],
+    "subgoal_success": [
+     0.9
+    ]
+   },
+   {
+    "cycle": 12,
+    "probe_iter": 29,
+    "probe_success": 0.9285714285714286,
+    "label": "Land 25-30 g plates that survive the carry\u2026",
+    "optimize_iters": [
+     30
+    ],
+    "subgoal_success": [
+     0.9
+    ]
+   }
+  ]
+ },
+ "0913-plate-fmax/island_03": {
+  "run": "/local/home/jiahengh/lab42/src/FAR-mjlab/reports/2026-09/09-13/runs/09-13_0910_vbarcodepop_0913-plate-fmax",
+  "sg_n": {
+   "1": 10,
+   "3": 10,
+   "4": 10,
+   "6": 10,
+   "7": 10,
+   "8": 10,
+   "10": 10,
+   "12": 10,
+   "14": 10,
+   "16": 10,
+   "18": 10,
+   "19": 26,
+   "20": 15,
+   "21": 26,
+   "22": 15,
+   "23": 26,
+   "24": 10,
+   "25": 28,
+   "26": 10,
+   "27": 24,
+   "28": 10,
+   "29": 25,
+   "30": 10,
+   "31": 25,
+   "32": 10,
+   "33": 25,
+   "34": 15,
+   "35": 26,
+   "36": 9
+  },
+  "cycles": [
+   {
+    "cycle": 1,
+    "probe_iter": 0,
+    "probe_success": 0.0,
+    "label": "SG1 single front-row plate delivery",
+    "optimize_iters": [
+     1
+    ],
+    "subgoal_success": [
+     0.8
+    ]
+   },
+   {
+    "cycle": 2,
+    "probe_iter": 2,
+    "probe_success": 0.5555555555555556,
+    "label": "SG2 back-row single plate",
+    "optimize_iters": [
+     3,
+     4
+    ],
+    "subgoal_success": [
+     0.6,
+     1.0
+    ]
+   },
+   {
+    "cycle": 3,
+    "probe_iter": 5,
+    "probe_success": 0.8571428571428571,
+    "label": "SG3 clear all four plates",
+    "optimize_iters": [
+     6,
+     7,
+     8
+    ],
+    "subgoal_success": [
+     0.7,
+     0.9,
+     1.0
+    ]
+   },
+   {
+    "cycle": 4,
+    "probe_iter": 9,
+    "probe_success": 0.8928571428571429,
+    "label": "SG4 workspace-boundary plate delivery",
+    "optimize_iters": [
+     10
+    ],
+    "subgoal_success": [
+     1.0
+    ]
+   },
+   {
+    "cycle": 5,
+    "probe_iter": 11,
+    "probe_success": 0.7142857142857143,
+    "label": "SG5 hold 35-40 g plates",
+    "optimize_iters": [
+     12
+    ],
+    "subgoal_success": [
+     1.0
+    ]
+   },
+   {
+    "cycle": 6,
+    "probe_iter": 13,
+    "probe_success": 0.8928571428571429,
+    "label": "SG6 40 g back-row/far-corner plates",
+    "optimize_iters": [
+     14
+    ],
+    "subgoal_success": [
+     0.6
+    ]
+   },
+   {
+    "cycle": 7,
+    "probe_iter": 15,
+    "probe_success": 0.8928571428571429,
+    "label": "SG7 ordered sequences after a same-side\u2026",
+    "optimize_iters": [
+     16
+    ],
+    "subgoal_success": [
+     1.0
+    ]
+   },
+   {
+    "cycle": 8,
+    "probe_iter": 17,
+    "probe_success": 0.9285714285714286,
+    "label": "SG8 deliver into a displaced/yawed tote by\u2026",
+    "optimize_iters": [
+     18
+    ],
+    "subgoal_success": [
+     0.7
+    ]
+   },
+   {
+    "cycle": 9,
+    "probe_iter": 19,
+    "probe_success": 0.8846153846153846,
+    "label": "SG9 heavy-plate carry retention",
+    "optimize_iters": [
+     20
+    ],
+    "subgoal_success": [
+     0.6666666666666666
+    ]
+   },
+   {
+    "cycle": 10,
+    "probe_iter": 21,
+    "probe_success": 0.6538461538461539,
+    "label": "SG10 heavy-plate carry MARGIN beyond 40 g",
+    "optimize_iters": [
+     22
+    ],
+    "subgoal_success": [
+     0.4666666666666667
+    ]
+   },
+   {
+    "cycle": 11,
+    "probe_iter": 23,
+    "probe_success": 0.8846153846153846,
+    "label": "SG11 loss-aware delivery",
+    "optimize_iters": [
+     24
+    ],
+    "subgoal_success": [
+     0.5
+    ]
+   },
+   {
+    "cycle": 12,
+    "probe_iter": 25,
+    "probe_success": 0.8928571428571429,
+    "label": "SG12 tote-wall-adjacent grasp recovery",
+    "optimize_iters": [
+     26
+    ],
+    "subgoal_success": [
+     0.2
+    ]
+   },
+   {
+    "cycle": 13,
+    "probe_iter": 27,
+    "probe_success": 0.8333333333333334,
+    "label": "SG14 cross-body far-opposite delivery via\u2026",
+    "optimize_iters": [
+     28
+    ],
+    "subgoal_success": [
+     0.1
+    ]
+   },
+   {
+    "cycle": 14,
+    "probe_iter": 29,
+    "probe_success": 1.0,
+    "label": "SG16 multi-sample reliability VERIFICATION\u2026",
+    "optimize_iters": [
+     30
+    ],
+    "subgoal_success": [
+     1.0
+    ]
+   },
+   {
+    "cycle": 15,
+    "probe_iter": 31,
+    "probe_success": 0.84,
+    "label": "sg17 = near-base front-plate reliability",
+    "optimize_iters": [
+     32
+    ],
+    "subgoal_success": [
+     0.9
+    ]
+   },
+   {
+    "cycle": 16,
+    "probe_iter": 33,
+    "probe_success": 0.96,
+    "label": "SG18 = near-base x0.42/y0.30 PAIR\u2026",
+    "optimize_iters": [
+     34
+    ],
+    "subgoal_success": [
+     0.6
+    ]
+   },
+   {
+    "cycle": 17,
+    "probe_iter": 35,
+    "probe_success": 0.9230769230769231,
+    "label": "SG19 = the near-base OUTBOARD-GRASP flake",
+    "optimize_iters": [
+     36
+    ],
+    "subgoal_success": [
+     1.0
+    ]
+   }
+  ]
+ },
+ "0823-towel-pop-v1/island_00": {
+  "run": "/local/home/jiahengh/lab42/src/FAR-mjlab/reports/2026-08/08-23/runs/08-23_0409_vbarcodepop_towel-pop-v1",
+  "sg_n": {
+   "0": 10,
+   "1": 10,
+   "2": 10,
+   "3": 10,
+   "4": 10,
+   "5": 10,
+   "6": 10,
+   "7": 10,
+   "8": 10,
+   "9": 10,
+   "10": 10,
+   "11": 10,
+   "12": 10,
+   "13": 10,
+   "14": 10,
+   "15": 10,
+   "16": 10,
+   "17": 5,
+   "18": 5,
+   "19": 5,
+   "20": 5,
+   "21": 5,
+   "22": 5,
+   "23": 5
+  },
+  "cycles": [
+   {
+    "cycle": 1,
+    "probe_iter": 0,
+    "probe_success": 0.0,
+    "label": "pinch a towel edge and lift a handful of\u2026",
+    "optimize_iters": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "subgoal_success": [
+     0.5,
+     0.7,
+     0.5,
+     0.8
+    ]
+   },
+   {
+    "cycle": 2,
+    "probe_iter": 5,
+    "probe_success": 0.14814814814814814,
+    "label": "fold the towel in half by carrying its\u2026",
+    "optimize_iters": [
+     6,
+     7,
+     8
+    ],
+    "subgoal_success": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "cycle": 3,
+    "probe_iter": 9,
+    "probe_success": 0.037037037037037035,
+    "label": "fold the towel in half and leave it lying\u2026",
+    "optimize_iters": [
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16
+    ],
+    "subgoal_success": [
+     0.0,
+     0.1,
+     0.3,
+     0.2,
+     0.5,
+     0.4,
+     0.2
+    ]
+   },
+   {
+    "cycle": 4,
+    "probe_iter": 17,
+    "probe_success": 0.14285714285714285,
+    "label": "fold the towel in half and leave it flat,\u2026",
+    "optimize_iters": [
+     18,
+     19,
+     20,
+     21,
+     22,
+     23
+    ],
+    "subgoal_success": [
+     0.2,
+     0.2,
+     0.4,
+     0.4,
+     1.0,
+     0.6
+    ]
+   }
+  ]
+ },
+ "0823-towel-pop-v1/island_01": {
+  "run": "/local/home/jiahengh/lab42/src/FAR-mjlab/reports/2026-08/08-23/runs/08-23_0409_vbarcodepop_towel-pop-v1",
+  "sg_n": {
+   "0": 10,
+   "5": 10
+  },
+  "cycles": [
+   {
+    "cycle": 1,
+    "probe_iter": 0,
+    "probe_success": 0.10714285714285714,
+    "label": "fold in half across the towel's pose space",
+    "optimize_iters": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "subgoal_success": [
+     0.2,
+     0.5,
+     0.6,
+     0.0
+    ]
+   },
+   {
+    "cycle": 2,
+    "probe_iter": 5,
+    "probe_success": 0.2916666666666667,
+    "label": "fold in half across fabric physics",
+    "optimize_iters": [
+     6,
+     7,
+     8,
+     9,
+     10,
+     11
+    ],
+    "subgoal_success": [
+     0.0,
+     0.0,
+     0.3,
+     0.1,
+     0.3,
+     0.0
+    ]
+   },
+   {
+    "cycle": 3,
+    "probe_iter": 12,
+    "probe_success": 0.10714285714285714,
+    "label": "the fold closes its own measured shortfall",
+    "optimize_iters": [
+     13,
+     14,
+     15,
+     16
+    ],
+    "subgoal_success": [
+     0.4,
+     0.3,
+     0.2,
+     0.0
+    ]
+   },
+   {
+    "cycle": 4,
+    "probe_iter": 17,
+    "probe_success": 0.5714285714285714,
+    "label": "the same fold run twice passes twice",
+    "optimize_iters": [
+     18,
+     19,
+     20,
+     21,
+     22,
+     23
+    ],
+    "subgoal_success": [
+     0.3,
+     0.3,
+     0.5,
+     0.5,
+     0.6,
+     0.2
+    ]
+   }
+  ]
+ },
+ "0823-towel-pop-v1/island_02": {
+  "run": "/local/home/jiahengh/lab42/src/FAR-mjlab/reports/2026-08/08-23/runs/08-23_0409_vbarcodepop_towel-pop-v1",
+  "sg_n": {
+   "0": 10,
+   "6": 10,
+   "10": 10,
+   "14": 10,
+   "18": 10
+  },
+  "cycles": [
+   {
+    "cycle": 1,
+    "probe_iter": 0,
+    "probe_success": 0.07692307692307693,
+    "label": "take hold of towel fabric with the jaws\u2026",
+    "optimize_iters": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "subgoal_success": [
+     0.4,
+     0.5,
+     0.8,
+     0.7,
+     0.9
+    ]
+   },
+   {
+    "cycle": 2,
+    "probe_iter": 6,
+    "probe_success": 0.03571428571428571,
+    "label": "carry a grasped towel edge at least 20 cm\u2026",
+    "optimize_iters": [
+     7,
+     8,
+     9
+    ],
+    "subgoal_success": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "cycle": 3,
+    "probe_iter": 10,
+    "probe_success": 0.10714285714285714,
+    "label": "fold a towel in half using BOTH arms on\u2026",
+    "optimize_iters": [
+     11,
+     12,
+     13
+    ],
+    "subgoal_success": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "cycle": 4,
+    "probe_iter": 14,
+    "probe_success": 0.10714285714285714,
+    "label": "fold the towel in half REPEATABLY with the\u2026",
+    "optimize_iters": [
+     15,
+     16,
+     17
+    ],
+    "subgoal_success": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "cycle": 5,
+    "probe_iter": 18,
+    "probe_success": 0.08333333333333333,
+    "label": "make the bimanual fold CHEAP enough that\u2026",
+    "optimize_iters": [
+     19,
+     20,
+     21,
+     22,
+     23,
+     24
+    ],
+    "subgoal_success": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.1,
+     0.0
+    ]
+   }
+  ]
+ },
+ "0823-towel-pop-v1/island_03": {
+  "run": "/local/home/jiahengh/lab42/src/FAR-mjlab/reports/2026-08/08-23/runs/08-23_0409_vbarcodepop_towel-pop-v1",
+  "sg_n": {
+   "0": 10,
+   "1": 10,
+   "3": 10,
+   "4": 10,
+   "6": 10,
+   "7": 10,
+   "8": 10,
+   "9": 10,
+   "11": 10,
+   "12": 10,
+   "13": 10,
+   "14": 10,
+   "15": 10,
+   "17": 10,
+   "19": 10,
+   "20": 10,
+   "21": 10,
+   "22": 10,
+   "23": 10,
+   "24": 10,
+   "25": 10
+  },
+  "cycles": [
+   {
+    "cycle": 1,
+    "probe_iter": 0,
+    "probe_success": 0.07692307692307693,
+    "label": "reach the towel and displace it >= 5 cm\u2026",
+    "optimize_iters": [
+     1
+    ],
+    "subgoal_success": [
+     0.0
+    ]
+   },
+   {
+    "cycle": 2,
+    "probe_iter": 2,
+    "probe_success": 0.11538461538461539,
+    "label": "Fold the towel in half from any pose\u2026",
+    "optimize_iters": [
+     3,
+     4
+    ],
+    "subgoal_success": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "cycle": 3,
+    "probe_iter": 5,
+    "probe_success": 0.125,
+    "label": "Grasp and lift a handful of fabric clear\u2026",
+    "optimize_iters": [
+     6,
+     7,
+     8,
+     9
+    ],
+    "subgoal_success": [
+     0.4,
+     0.5,
+     0.4,
+     0.3
+    ]
+   },
+   {
+    "cycle": 4,
+    "probe_iter": 10,
+    "probe_success": 0.0,
+    "label": "Make the perceived towel edge accurate\u2026",
+    "optimize_iters": [
+     11,
+     12,
+     13,
+     14,
+     15
+    ],
+    "subgoal_success": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "cycle": 5,
+    "probe_iter": 16,
+    "probe_success": 0.0,
+    "label": "Fold in half with one arm and still be\u2026",
+    "optimize_iters": [
+     17
+    ],
+    "subgoal_success": [
+     0.0
+    ]
+   },
+   {
+    "cycle": 6,
+    "probe_iter": 18,
+    "probe_success": 0.08333333333333333,
+    "label": "Fold in half with one arm, five clauses,\u2026",
+    "optimize_iters": [
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25
+    ],
+    "subgoal_success": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  ]
+ }
+}

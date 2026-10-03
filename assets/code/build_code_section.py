@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Regenerate the per-task "View code" dialogs in index.html.
 
-Toolbox pane: every toolbox method the CAP calls, in first-call order, as a stub
+Toolbox pane: every toolbox method the CaP calls, in first-call order, as a stub
 (signature, one-line summary from SUMMARIES, body length) read from toolbox_api.json,
 which was extracted with `ast` from the deployed toolbox.py files (signatures only).  The primitive
 the task hinges on is expanded with the comment-stripped body excerpt from its
@@ -27,23 +27,23 @@ TASKS = {
     toolbox_src="toolbox.py", toolbox_total=6887, expand={"find_objects": ("barcode_toolbox_find_objects.py", 0), "grasp_object": ("barcode_toolbox_grasp_object.py", 0),
             "present_to_scanner": ("barcode_toolbox_present_to_scanner.py", 0), "regrasp_rotated": ("barcode_toolbox_regrasp_rotated.py", 0),
             "place_in_tote": ("barcode_toolbox_place_in_tote.py", 0)},
-    toolbox_note="The ten primitives this CAP calls, in call order; the five that do the work are cut to their key lines. The grasp vets its poses before moving, the scan sweeps and tilts the payload until a read latches, and the stow refuses to release an unscanned object.",
+    toolbox_note="The ten primitives this CaP calls, with the five that do the work cut to their key lines. Grasps are vetted; the stow refuses unscanned objects.",
     cap=("barcode_cap.py", 0, 79),
-    cap_note="Find, grasp, present to the scanner; judge the read by the set of scanned codes growing; regrasp rotated on a miss; put an object that still will not read back in the source tote instead of stowing it.",
+    cap_note="Find, grasp, present to the scanner; a read counts once the scanned-code set grows. On a miss, regrasp rotated; if it still fails, return it to the source tote.",
   ),
   "plate": dict(
     title="Plate to tote",
     instruction="Clean the station by moving all four plates (green front-left, blue front-right, red back-left, yellow back-right) into the tote.",
     toolbox_src="toolbox.py", toolbox_total=1834, expand={"perceive_plates": ("plate_toolbox_perceive_plates.py", 0), "deliver_plate": ("plate_toolbox_deliver_plate.py", 0)},
-    toolbox_note="The three primitives this CAP calls. Perception re-detects once when an expected colour is missing; delivery grasps the rim, carries, releases and re-detects, and counts the plate only if none of its colour remains.",
+    toolbox_note="The three primitives this CaP calls. Perception re-detects missing colours; delivery grasps the rim, carries, releases, and counts the plate once it is gone.",
     cap=("plate_cap.py", 0, 43),
-    cap_note="One perception call, then one delivery per colour in a fixed order, reusing the detection list each delivery returns. A colour still on the table after its delivery gets a single retry at its new location.",
+    cap_note="One perception call, then one delivery per colour in a fixed order, reusing the detections each delivery returns. A plate left on the table gets one retry.",
   ),
   "towel": dict(
     title="Towel folding",
     instruction="Fold the towel twice, into quarters: fold it in half, then fold the result in half again along the other axis. Keep it on the table.",
     toolbox_src="toolbox.py", toolbox_total=1639, expand={"towel_frame": ("towel_toolbox_towel_frame.py", 0), "fold_edge": ("towel_toolbox_fold_edge.py", 0)},
-    toolbox_note="The three primitives this CAP calls. The frame labels the towel's edges by their outward normals, so it works on a yawed or folded towel; one fold is one closed-loop call that picks its edge relative to the previous crease.",
+    toolbox_note="The three primitives this CaP calls. The frame labels towel edges by outward normals, so it works yawed or folded; each fold is one closed-loop call.",
     cap=("towel_cap.py", 0, 50),
     cap_note="Two fold calls. The second passes the first fold's carry direction as across. Each fold gets one retry, gated on the measured towel size and the step budget.",
   ),
@@ -147,7 +147,7 @@ def pane(kind, name, code, meta, note):
   return f'''
       <div class="code-pane code-pane--{kind}">
         <div class="code-pane-head">
-          <span class="code-kind">{"Toolbox" if kind == "toolbox" else "CAP script"}</span>
+          <span class="code-kind">{"Toolbox" if kind == "toolbox" else "CaP script"}</span>
           <span class="code-name">{escape(name)}</span>
           <span class="code-meta">{escape(meta)}</span>
         </div>
@@ -164,7 +164,7 @@ def dialog(key, t):
     <dialog class="code-dialog" id="code-{key}" aria-labelledby="code-{key}-title">
       <div class="code-dialog-head">
         <div>
-          <p class="eyebrow">Toolbox and program</p>
+          <p class="eyebrow">Toolbox and CaP script</p>
           <h3 id="code-{key}-title">{escape(t["title"])}</h3>
           <p class="code-instruction">&ldquo;{escape(t["instruction"])}&rdquo;</p>
         </div>
