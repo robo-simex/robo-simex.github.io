@@ -65,13 +65,13 @@
 }
 
 :root {
-  --bg: #F5F0E8;
-  --bg-surface: #EDE5D8;
+  --bg: #FFFFFF;
+  --bg-surface: #F5F5F5;
   --text: #1B1614;
   --text-muted: #6B5F5A;
   --accent: #8B2635;
   --accent-warm: #B8461B;
-  --divider: #D8CEBF;
+  --divider: #DEDEDE;
   --sim: #2F6EA8;        --real: #B8461B;       --font-display: "Cormorant Garamond", Georgia, serif;
   --font-body: "Libre Baskerville", Georgia, serif;
   --font-mono: "IBM Plex Mono", "Courier New", monospace;
@@ -101,7 +101,7 @@ code, pre { font-family: var(--font-mono); }
 
 .site-nav {
   position: sticky; top: 0; z-index: 50;
-  background: rgba(245, 240, 232, .92); backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, .92); backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--divider);
 }
 .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 52px; }
