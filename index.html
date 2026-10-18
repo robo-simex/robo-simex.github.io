@@ -11,7 +11,7 @@
   <link rel="preload" href="assets/fonts/cormorant-garamond-normal-500-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/libre-baskerville-normal-400-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/ibm-plex-mono-normal-400-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20261018-6">
 </head>
 <body>
 
@@ -38,26 +38,39 @@
 
 <section id="overview" class="section section--lead">
   <div class="container">
-    <p class="body-text lead">
+    <p class="body-text lead overview-intro">
       Coding agents are good at reasoning about goals in the digital world, but bringing them onto robots has been hard.
-      Writing a policy in one shot fails because the model does not understand the robot or the physics well enough, and
-      iterating directly on hardware is slow, costly and unsafe. <strong>SimEX</strong> uses simulation as the
-      laboratory. In <em>Stage 1</em> a <strong>probe-and-optimize harness</strong> drives a coding agent through
-      open-ended cycles in a simulated sandbox: it probes the toolbox on tasks it invents itself, turns the failures into
-      a sub-goal, and optimizes the toolbox until that sub-goal passes. In <em>Stage 2</em> it adapts that toolbox to the
-      real robot with <strong>only five physical trials</strong>, replaying each trial in simulation to diagnose the failure and screening
-      several candidate repairs before spending the next trial. No demonstrations, no hand-written skills, and about ten
-      minutes of robot time per task.
+      SimEX uses simulation as a laboratory for coding agents to discover and refine reusable robot skills, enabling
+      efficient adaptation to real hardware. No demonstrations, no hand-written skills, and about ten minutes of robot
+      time per task.
     </p>
-    <figure class="plain">
-      <img src="assets/figures/website_image.png" width="1859" height="846" alt="SimEX: discover robot skills in simulation, build a reusable toolbox of code and usage knowledge, and adapt in the real world through real trials and simulation tests.">
-    </figure>
+  </div>
+  <div class="container overview-method">
     <p class="body-text">
-      This page shows what SimEX produced. In every video, the robot is controlled by a <strong>Python script the coding
-      agent wrote directly, in the code-as-policies (CaP) setting</strong>: no learned policy and no teleoperation. The
-      script calls the toolbox the agent built in Stage 1 and adapted in Stage 2, and the View code button beside each task
-      opens the script that ran and the primitives it calls.
+      In <em>Stage 1</em>, a <em>probe-and-optimize harness</em> drives a coding agent through open-ended cycles in a
+      simulated sandbox: it probes the toolbox on tasks it invents itself, turns failures into a sub-goal, and optimizes
+      the toolbox until that sub-goal passes.
+      In <em>Stage 2</em>, the agent adapts that toolbox to the real robot with <strong>only five physical trials</strong>,
+      replaying each trial in simulation to diagnose the failure and screening several candidate repairs before spending
+      the next trial. See our paper for details.
     </p>
+  </div>
+  <div class="container container--wide">
+    <aside class="reader-guide" aria-labelledby="reader-guide-title">
+      <h3 id="reader-guide-title">On this page</h3>
+      <div class="reader-guide-copy">
+        <p>
+          Explore <a href="#real-world">real-world results</a>, <a href="#emergent">emergent behaviors</a>,
+          <a href="#multitask">instruction following</a>, and <a href="#simulation">simulation experiments</a>.
+        </p>
+        <p>
+          In every video, the robot is controlled by a Python script the coding agent wrote directly, in the
+          <em>code-as-policies (CaP)</em> setting: no learned policy and no teleoperation. The script calls the toolbox the
+          agent built in Stage 1 and adapted in Stage 2. The <em>View code</em> button beside each task opens the script
+          that ran and the primitives it calls.
+        </p>
+      </div>
+    </aside>
   </div>
 </section>
 

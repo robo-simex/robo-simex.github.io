@@ -179,6 +179,18 @@ figcaption { margin-top: .7rem; font-size: var(--text-sm); color: var(--text-mut
 
 .section--lead { padding-top: 0; }
 .lead { font-size: var(--text-md); }
+.overview-intro { margin: 0; }
+.overview-method { margin-top: var(--space-lg); }
+.reader-guide {
+  margin-top: var(--space-2xl);
+  padding: var(--space-lg) clamp(1.25rem, 4vw, 2rem);
+  background: var(--bg-surface); border: 1px solid var(--divider); border-radius: var(--radius-md);
+}
+.reader-guide h3 { margin: 0 0 var(--space-md); font-size: var(--text-xl); }
+.reader-guide-copy p { margin: 0 0 var(--space-md); font-size: var(--text-base); }
+.reader-guide-copy p:last-child { margin-bottom: 0; color: var(--text-muted); }
+.reader-guide-copy a { text-decoration: underline; text-decoration-color: var(--divider); text-underline-offset: .2em; }
+.reader-guide-copy a:hover { text-decoration-color: currentColor; }
 .hero { padding-bottom: var(--space-md); }
 footer { padding: var(--space-lg) 0; border-top: 1px solid var(--divider); }
 
